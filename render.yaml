@@ -1,0 +1,31 @@
+# Free online hosting on Render (https://render.com). Render reads this file when you create a
+# "Blueprint" from the GitHub repository. Secret values (marked sync: false) are typed into Render's
+# page when you create it, never written here.
+services:
+  - type: web
+    name: jewelry-sales-agent-demo
+    runtime: python
+    plan: free
+    region: frankfurt  # the closest Render region to Saudi Arabia
+    buildCommand: pip install -r requirements.txt
+    startCommand: python -u server.py --public --shop demo-shop
+    healthCheckPath: /health
+    envVars:
+      - key: ALLOWED_SHOPS        # only the neutral demo shop can be opened online
+        value: demo-shop
+      - key: DAILY_MESSAGE_LIMIT  # customer messages the AI answers per day (keeps the bill small)
+        value: "300"
+      - key: CHAT_MESSAGE_LIMIT   # per chat
+        value: "40"
+      - key: CLAUDE_MODEL
+        value: claude-haiku-5-5
+      - key: CLAUDE_EFFORT
+        value: low
+      - key: DEMO_PASSWORD        # visitors type it once, or open a link made on /make-link
+        sync: false
+      - key: ANTHROPIC_API_KEY
+        sync: false
+      - key: GOLDAPI_KEY
+        sync: false
+      - key: METALS_DEV_API_KEY
+        sync: false

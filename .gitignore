@@ -1,0 +1,6 @@
+.env
+__pycache__/
+shops/*/data/
+gold_price_cache.json
+gold_api_usage.json
+app_log.txt
