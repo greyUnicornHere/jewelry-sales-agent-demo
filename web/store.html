@@ -1,0 +1,186 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#f7f4ee" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#151311" media="(prefers-color-scheme: dark)">
+<title>Product</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600&family=IBM+Plex+Sans+Arabic:wght@400;500;600&family=Noto+Naskh+Arabic:wght@500;600&display=swap" rel="stylesheet">
+<style>
+  /* A demo shop's product page: what "Buy on website" opens when the shop has no website of its own. */
+  :root {
+    --bg: #f7f4ee; --surface: #ffffff; --surface-2: #f1ece3;
+    --ink: #1d1a17; --ink-2: #5f574e; --ink-3: #9a9086; --line: rgba(29, 26, 23, 0.09);
+    --gold: #a47a2c; --gold-2: #c9a45c; --gold-soft: rgba(164, 122, 44, 0.10);
+    --primary: #1d1a17; --on-primary: #ffffff; --ok: #3fa66b;
+    --header-bg: rgba(247, 244, 238, 0.82);
+    --shadow-md: 0 8px 28px rgba(29, 26, 23, 0.08), 0 2px 6px rgba(29, 26, 23, 0.04);
+    --sans: "IBM Plex Sans Arabic", -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif;
+    --serif: "Cormorant Garamond", "Noto Naskh Arabic", Georgia, serif;
+    color-scheme: light;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --bg: #151311; --surface: #1d1a17; --surface-2: #262220;
+      --ink: #f3eee6; --ink-2: #b9afa3; --ink-3: #82786d; --line: rgba(243, 238, 230, 0.09);
+      --gold: #d6b06a; --gold-2: #e6c88b; --gold-soft: rgba(214, 176, 106, 0.12);
+      --primary: #f3eee6; --on-primary: #151311; --header-bg: rgba(21, 19, 17, 0.8);
+      --shadow-md: 0 8px 28px rgba(0, 0, 0, 0.35);
+      color-scheme: dark;
+    }
+  }
+  :root[data-theme="dark"] {
+    --bg: #151311; --surface: #1d1a17; --surface-2: #262220;
+    --ink: #f3eee6; --ink-2: #b9afa3; --ink-3: #82786d; --line: rgba(243, 238, 230, 0.09);
+    --gold: #d6b06a; --gold-2: #e6c88b; --gold-soft: rgba(214, 176, 106, 0.12);
+    --primary: #f3eee6; --on-primary: #151311; --header-bg: rgba(21, 19, 17, 0.8);
+    --shadow-md: 0 8px 28px rgba(0, 0, 0, 0.35);
+    color-scheme: dark;
+  }
+  * { box-sizing: border-box; }
+  [hidden] { display: none !important; }
+  body { margin: 0; background: var(--bg); color: var(--ink); font-family: var(--sans); font-size: 16px; line-height: 1.6;
+         -webkit-font-smoothing: antialiased; }
+  button, select { font: inherit; color: inherit; }
+  header { position: sticky; top: 0; z-index: 5; background: var(--header-bg); border-bottom: 1px solid var(--line);
+           -webkit-backdrop-filter: saturate(180%) blur(20px); backdrop-filter: saturate(180%) blur(20px); }
+  .bar { max-width: 980px; margin: 0 auto; padding: 0 16px; height: 60px; display: flex; align-items: center; gap: 12px; }
+  .logo { width: 34px; height: 34px; border-radius: 50%; display: grid; place-items: center; flex: 0 0 auto;
+          background: linear-gradient(145deg, var(--gold-2), var(--gold)); }
+  .shop { flex: 1; font-family: var(--serif); font-weight: 600; font-size: 20px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .cart { position: relative; width: 40px; height: 40px; border-radius: 50%; border: 1px solid var(--line); background: var(--surface);
+          display: grid; place-items: center; }
+  .cart svg { width: 19px; height: 19px; }
+  .badge { position: absolute; top: -4px; inset-inline-end: -4px; min-width: 19px; height: 19px; padding: 0 5px; border-radius: 999px;
+           background: var(--gold); color: #fff; font-size: 11px; font-weight: 600; display: grid; place-items: center; }
+  main { max-width: 980px; margin: 0 auto; padding: 24px 16px 48px; display: grid; grid-template-columns: 1.1fr 1fr; gap: 36px; }
+  .photo { aspect-ratio: 1 / 1; border-radius: 24px; overflow: hidden; background: var(--surface-2); box-shadow: var(--shadow-md); position: relative; }
+  .photo img { width: 100%; height: 100%; object-fit: cover; display: block; }
+  .tag { position: absolute; top: 14px; inset-inline-start: 14px; padding: 4px 10px; border-radius: 999px; font-size: 12px;
+         color: #fff; background: rgba(20, 18, 16, 0.55); -webkit-backdrop-filter: blur(8px); backdrop-filter: blur(8px); }
+  .info { display: flex; flex-direction: column; gap: 14px; padding-top: 8px; }
+  h1 { margin: 0; font-family: var(--serif); font-weight: 600; font-size: clamp(28px, 5vw, 38px); line-height: 1.15; }
+  .meta { color: var(--ink-3); font-size: 14px; }
+  .price { font-size: 28px; font-weight: 600; line-height: 1.3; }
+  .vat { font-size: 13px; color: var(--ink-3); margin-top: -10px; }
+  .desc { color: var(--ink-2); }
+  .note { font-size: 13.5px; color: var(--ink-2); background: var(--gold-soft); border-radius: 12px; padding: 10px 14px; }
+  label { display: flex; flex-direction: column; gap: 6px; font-size: 13px; font-weight: 500; color: var(--ink-2); max-width: 220px; }
+  select { padding: 11px 12px; border-radius: 12px; background: var(--surface); border: 1px solid var(--line); font-size: 15px; }
+  .add { height: 52px; border: 0; border-radius: 16px; font-weight: 600; font-size: 16px; cursor: pointer;
+         background: var(--primary); color: var(--on-primary); transition: transform .15s, opacity .2s; }
+  .add:active { transform: scale(0.99); }
+  .added { display: flex; gap: 12px; align-items: flex-start; padding: 14px 16px; border-radius: 16px; background: var(--surface);
+           border: 1px solid var(--line); box-shadow: var(--shadow-md); }
+  .added::before { content: "✓"; flex: 0 0 auto; width: 26px; height: 26px; border-radius: 50%; display: grid; place-items: center;
+                   background: var(--ok); color: #fff; font-size: 14px; font-weight: 600; }
+  .added b { display: block; }
+  .added span { font-size: 13.5px; color: var(--ink-2); }
+  .back { align-self: flex-start; font-size: 14.5px; color: var(--ink-2); background: none; border: 0; padding: 4px 0; cursor: pointer;
+          text-decoration: underline; text-underline-offset: 3px; }
+  .problem { max-width: 600px; margin: 60px auto; text-align: center; color: var(--ink-2); padding: 0 16px; }
+  @media (max-width: 760px) { main { grid-template-columns: 1fr; gap: 20px; padding-top: 16px; } }
+</style>
+</head>
+<body>
+<header>
+  <div class="bar">
+    <div class="logo" aria-hidden="true"><svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M6 4h12l4 5-10 11L2 9l4-5Z" fill="#fff"/></svg></div>
+    <div class="shop" id="shopName"></div>
+    <div class="cart" aria-label="Cart">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 7h12l-1 13H7L6 7Z"/><path d="M9 7a3 3 0 0 1 6 0"/></svg>
+      <span class="badge" id="badge" hidden>1</span>
+    </div>
+  </div>
+</header>
+<main id="product" hidden>
+  <div class="photo"><img id="img" alt=""><span class="tag" id="sample" hidden></span></div>
+  <div class="info">
+    <h1 id="name"></h1>
+    <div class="meta" id="meta"></div>
+    <div class="price" id="price"></div>
+    <div class="vat" id="vat"></div>
+    <div class="desc" id="desc"></div>
+    <div class="note" id="weightNote" hidden></div>
+    <label id="sizeWrap" hidden><span id="sizeLabel"></span><select id="size"></select></label>
+    <button class="add" id="add" type="button"></button>
+    <div class="added" id="added" hidden><div><b id="addedTitle"></b><span id="addedText"></span></div></div>
+    <button class="back" id="back" type="button"></button>
+  </div>
+</main>
+<p class="problem" id="problem" hidden></p>
+<script>
+  const T = {
+    ar: { dir: "rtl", karat: (k, w) => `عيار ${k} · ${w} جرام`, currency: " ريال", vat: "السعر شامل ضريبة القيمة المضافة",
+          onRequest: "السعر عند الطلب", add: "أضف إلى السلة", added: "أضيفت إلى السلة",
+          addedText: "هذا متجر تجريبي. في متجركم، يكمل العميل الدفع هنا في موقعكم.",
+          back: "الرجوع إلى المحادثة", size: "المقاس", sizeNote: "الوزن والسعر النهائي حسب المقاس، وفريق المبيعات يؤكدهما لك.", sample: "صورة توضيحية", missing: "تعذر عرض القطعة. ارجع إلى المحادثة وجرب مرة ثانية." },
+    en: { dir: "ltr", karat: (k, w) => `${k}K · ${w} g`, currency: " SAR", vat: "Price includes VAT",
+          onRequest: "Price on request", add: "Add to cart", added: "Added to cart",
+          addedText: "This is a demo shop. In your shop, the customer pays here, on your own website.",
+          back: "Back to the chat", size: "Size", sizeNote: "The final weight and price depend on the size. Our sales team confirms them.", sample: "Sample image", missing: "This piece cannot be shown. Go back to the chat and try again." },
+  };
+  const parts = location.pathname.split("/");  // /store/<shop>/<id>
+  const shop = parts[2], itemId = parts[3];
+  const params = new URLSearchParams(location.search);
+  const lang = params.get("lang") === "en" ? "en" : "ar";
+  const t = T[lang];
+  const $ = (id) => document.getElementById(id);
+  document.documentElement.lang = lang;
+  document.documentElement.dir = t.dir;
+
+  async function load() {
+    try {
+      const [shopRes, itemRes] = await Promise.all([
+        fetch("/api/shop?shop=" + encodeURIComponent(shop)),
+        fetch(`/api/product?shop=${encodeURIComponent(shop)}&id=${encodeURIComponent(itemId)}&lang=${lang}` +
+              `&session=${encodeURIComponent(params.get("session") || "")}`),
+      ]);
+      if (!shopRes.ok || !itemRes.ok) throw new Error("missing");
+      const info = await shopRes.json(), p = await itemRes.json();
+      const label = lang === "ar" ? (params.get("name_ar") || params.get("name_en")) : (params.get("name_en") || params.get("name_ar"));
+      const shopName = (label || "").slice(0, 60) || (lang === "ar" ? info.shop_name_ar : info.shop_name_en);
+      $("shopName").textContent = shopName;
+      document.title = `${p.name} · ${shopName}`;
+      $("img").src = p.image; $("img").alt = p.name;
+      if (p.sample_image) { $("sample").textContent = t.sample; $("sample").hidden = false; }
+      $("name").textContent = p.name;
+      $("meta").textContent = t.karat(p.karat, p.weight_g);
+      if (p.total_sar === null || p.total_sar === undefined) {
+        $("price").textContent = t.onRequest;
+      } else {
+        $("price").textContent = Number(p.total_sar).toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 }) + t.currency;
+        $("vat").textContent = t.vat;
+      }
+      $("desc").textContent = p.description || "";
+      if (p.sized) {
+        $("weightNote").textContent = t.sizeNote; $("weightNote").hidden = false;
+        $("sizeLabel").textContent = t.size;  // rings: a size choice, like a real shop page
+        for (const s of ["14", "15", "16", "17", "18", "19", "20"]) { const o = document.createElement("option"); o.textContent = s; $("size").appendChild(o); }
+        $("size").value = "16";
+        $("sizeWrap").hidden = false;
+      }
+      $("add").textContent = t.add;
+      $("back").textContent = t.back;
+      $("product").hidden = false;
+    } catch (e) {
+      $("problem").textContent = t.missing; $("problem").hidden = false;
+    }
+  }
+  $("add").addEventListener("click", () => {
+    $("badge").hidden = false;
+    $("addedTitle").textContent = t.added; $("addedText").textContent = t.addedText;
+    $("added").hidden = false;
+    $("add").hidden = true;
+  });
+  $("back").addEventListener("click", () => {  // opened from the chat in a new tab: closing it returns to the chat
+    window.close();
+    setTimeout(() => history.back(), 300);
+  });
+  load();
+</script>
+</body>
+</html>

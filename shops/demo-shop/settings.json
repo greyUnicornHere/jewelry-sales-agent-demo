@@ -4,6 +4,7 @@
   "greeting_ar": "حياك الله، أسعدتنا زيارتك. كيف أقدر أخدمك اليوم؟",
   "greeting_en": "Welcome! How can I help you today?",
   "sample_images": true,
+  "demo_store": true,
   "occasions": [
     {"en": "Engagement (shabka)", "ar": "خطوبة (شبكة)"},
     {"en": "Wedding", "ar": "زواج"},

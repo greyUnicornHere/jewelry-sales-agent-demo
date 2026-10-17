@@ -99,6 +99,11 @@ def named_piece(shop_id: str, text: str) -> str:
     return ""
 
 
+# A question about the occasion written as plain text (the model should use ask_occasion, but sometimes
+# just writes the question). The buttons are then added under it, so the customer always gets them.
+_ASKS_OCCASION = re.compile(r"(?i)[^.!?؟\n]*\boccasion\b[^.!?؟\n]*\?|[^.!؟?\n]*مناسب[ةه][^.!؟?\n]*[؟?]")
+
+
 def product_mentioned(texts: list) -> bool:
     return any(_PRODUCT_WORDS.search(t) for t in texts)
 
@@ -401,6 +406,10 @@ class Agent:
         return self._new_form(key, "show_request_form", {
             "reason": "reserve", "request_text": request, "summary_for_team": summary, "language": language})
 
+    def price_lock(self, shop_id: str, session_id: str) -> dict:
+        """The gold price this chat uses (so the demo product page shows the same price as the card)."""
+        return self._price_locks.setdefault(f"{shop_id}:{session_id}", {})
+
     def get_form(self, shop_id: str, session_id: str, form_id: str) -> dict | None:
         form = self._forms.get(form_id)
         return form if form and form["session_key"] == f"{shop_id}:{session_id}" and not form["sent"] else None
@@ -497,6 +506,10 @@ class Agent:
 
             tool_calls = [b for b in response.content if b.type == "tool_use"]
             if not tool_calls:
+                if not turn.get("choices") and _ASKS_OCCASION.search("".join(turn["said"])):
+                    print("  [occasion buttons added under a text question]")
+                    yield {"type": "choices", "options": shop_tools.occasion_choices(
+                        shop_id, self._languages.get(session_key, "ar"))}
                 return
 
             results, shown = [], []
@@ -549,6 +562,7 @@ class Agent:
                         shown.append({"type": "products", "items": shop_tools.product_cards(
                             shop_id, call.input["item_ids"], call.input["language"], price_lock)})
                     elif call.name == "ask_occasion":
+                        turn["choices"] = True
                         shown.append({"type": "choices",
                                       "options": shop_tools.occasion_choices(shop_id, call.input["language"])})
                     elif call.name == "show_contact_sales":
@@ -564,6 +578,10 @@ class Agent:
             # Showing cards or the form ends the reply: no extra call to Claude, so the answer
             # is faster. The customer's next message is added after these tool results.
             if all(c.name in shop_tools.DISPLAY_TOOLS for c in tool_calls) and not any(r["is_error"] for r in results):
+                said = " ".join(turn["said"] + [e["text"] for e in shown if e["type"] == "message"])
+                if not turn.get("choices") and _ASKS_OCCASION.search(said):
+                    yield {"type": "choices", "options": shop_tools.occasion_choices(
+                        shop_id, self._languages.get(session_key, "ar"))}
                 return
 
         text = "عذرًا، صار عندي تأخير. ممكن تعيد سؤالك؟\nSorry, this took too long. Can you ask again?"

@@ -259,7 +259,9 @@ def product_cards(shop_id: str, item_ids: list, language: str, price_lock: dict 
             "weight_g": item["weight_g"],
             "total_sar": _quote(item, settings)["total_sar"] if settings else None,
             "image": f"/shop-images/{shop_id}/{item['image']}" if item.get("image") else "",
-            "url": _site_link(item.get("url", ""), lang),  # the product on the shop's own website, if it has one
+            # The product on the shop's own website; a demo shop without a website gets the app's own product page.
+            "url": _site_link(item["url"], lang) if item.get("url") else
+                   (f"/store/{shop_id}/{item_id}?lang={lang}" if shop.get("demo_store") else ""),
             "sample_image": bool(shop.get("sample_images")),
             "language": lang,
         })
