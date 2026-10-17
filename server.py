@@ -262,9 +262,13 @@ class Handler(BaseHTTPRequestHandler):
             return self._send(200, b"ok", "text/plain")
         if self._gate(url):
             return
-        if url.path == "/":
+        if url.path == "/" or (url.path in ("/chat", "/staff") and not parse_qs(url.query).get("shop")):
+            # No shop in the address: open the default shop (e.g. a link typed by hand).
+            query = parse_qs(url.query)
+            query["shop"] = [DEFAULT_SHOP]
             self.send_response(302)
-            self.send_header("Location", f"/chat?shop={DEFAULT_SHOP}")
+            self.send_header("Location", ("/chat" if url.path == "/" else url.path) + "?" +
+                             "&".join(f"{k}={quote(v[0])}" for k, v in query.items()))
             self.end_headers()
         elif url.path == "/chat":
             # Read on every visit, so changes to the page show after a browser refresh.
