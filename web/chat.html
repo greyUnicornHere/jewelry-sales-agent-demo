@@ -671,12 +671,6 @@
     if (p.url) {
       const buy = actionButton("a", "buy", t.buy);
       buy.href = p.url;
-      if (p.url.startsWith("/store/")) {  // the demo shop's own product page: same chat price and shop name
-        const extra = new URLSearchParams({ session: sessionId });
-        if (shopLabel.ar) extra.set("name_ar", shopLabel.ar);
-        if (shopLabel.en) extra.set("name_en", shopLabel.en);
-        buy.href = p.url + "&" + extra.toString();
-      }
       buy.target = "_blank";
       buy.rel = "noopener";
       bar.appendChild(buy);

@@ -1,0 +1,51 @@
+{
+  "shop_name_en": "Chocker",
+  "shop_name_ar": "مجوهرات شوكر",
+  "greeting_ar": "حياك الله في مجوهرات شوكر. كيف أقدر أخدمك اليوم؟",
+  "greeting_en": "Welcome to Chocker! How can I help you today?",
+  "city": "Eastern Province, Saudi Arabia (Dammam - Khobar). Online store: chokergold.com",
+  "address": "Not listed on the website. If a customer asks, offer the contact form so the team can share it.",
+  "phone": "Not listed on the website. The sales team contacts the customer through the contact form.",
+  "opening_hours": "Online store: orders any time. Shop visits by appointment; the team confirms the time.",
+  "visit_slots": ["10:00", "11:00", "12:00", "16:30", "17:30", "18:30", "19:30", "20:30", "21:30"],
+  "visit_slots_friday": ["16:30", "17:30", "18:30", "19:30", "20:30", "21:30"],
+  "currency": "SAR",
+  "vat_rate": 0.15,
+  "sample_images": false,
+  "occasions": [
+    {"en": "Engagement (shabka)", "ar": "خطوبة (شبكة)"},
+    {"en": "Wedding", "ar": "زواج"},
+    {"en": "New baby", "ar": "مولود جديد"},
+    {"en": "Eid or Ramadan", "ar": "عيد أو رمضان"},
+    {"en": "Graduation", "ar": "تخرج"},
+    {"en": "A gift for someone", "ar": "هدية لشخص عزيز"},
+    {"en": "For myself", "ar": "لنفسي"},
+    {"en": "Just looking", "ar": "أتفرج بس"}
+  ],
+
+  "gold_rate_source": "auto",
+  "gold_markup_percent": 0,
+  "gold_rates_sar_per_gram": {"24": 500.74, "22": 459.02, "21": 438.15, "18": 375.56},
+  "gold_rates_updated_at": "Backup rates from 15 Oct 2026, used only if the live price is not set up",
+
+  "payment_options": ["Tabby (installments)", "Tamara (installments)", "Cash on delivery in some cities (order confirmed by phone before shipping)"],
+  "max_labor_discount_percent": 10,
+  "free_extras": ["Free premium gift packaging and gift bag", "Free shipping"],
+  "high_value_threshold_sar": 30000,
+  "sales_whatsapp": "966561081965",
+  "staff_pin": "948585",
+  "human_reply_time": "soon",
+  "human_reply_time_ar": "قريبًا",
+
+  "policies": {
+    "returns_and_exchange": "Returns or exchange within 24 hours of receiving the order, if the piece is unused and in its original condition.",
+    "shipping": "Free shipping. Eastern Province (Dammam - Khobar): 24-48 hours. Other cities: 2-5 working days.",
+    "invoice": "Every order comes with an official invoice showing the commercial registration number, VAT number, precious metals sales permit, karat and weight.",
+    "authenticity": "All pieces are real gold, 18K or 21K depending on the piece.",
+    "gift_packaging": "Free premium packaging and a gift bag with every order.",
+    "sizes": "Rings and many bangles come in several sizes. Weight and price depend on the size; the sales team confirms the final weight and price.",
+    "brands": "Never name, compare with, or suggest any brand or designer (for example never say a piece is like or inspired by a famous brand). If asked about a brand, say you cannot comment on brands, and describe the piece by its own design, karat and weight. Do not claim who designed the pieces either (do not say they are the shop's own designs).",
+    "old_gold": "Not listed on the website. Offer the contact form so the sales team can answer.",
+    "custom_orders": "Hand these chats to the sales team with the contact form."
+  }
+}

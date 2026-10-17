@@ -406,10 +406,6 @@ class Agent:
         return self._new_form(key, "show_request_form", {
             "reason": "reserve", "request_text": request, "summary_for_team": summary, "language": language})
 
-    def price_lock(self, shop_id: str, session_id: str) -> dict:
-        """The gold price this chat uses (so the demo product page shows the same price as the card)."""
-        return self._price_locks.setdefault(f"{shop_id}:{session_id}", {})
-
     def get_form(self, shop_id: str, session_id: str, form_id: str) -> dict | None:
         form = self._forms.get(form_id)
         return form if form and form["session_key"] == f"{shop_id}:{session_id}" and not form["sent"] else None

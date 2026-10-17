@@ -125,7 +125,6 @@ IMAGE_TYPES = {".jpg": "image/jpeg", ".jpeg": "image/jpeg", ".png": "image/png",
                ".webp": "image/webp", ".svg": "image/svg+xml"}
 CHAT_PAGE_FILE = ROOT / "web" / "chat.html"
 STAFF_PAGE_FILE = ROOT / "web" / "staff.html"
-STORE_PAGE_FILE = ROOT / "web" / "store.html"
 agent = Agent() if os.environ.get("ANTHROPIC_API_KEY") else None
 live = live_chat.LiveChats()  # chats as the sales team sees them (live takeover)
 _last_warm: dict[str, float] = {}
@@ -298,23 +297,6 @@ class Handler(BaseHTTPRequestHandler):
             self._json(200, live.customer_updates(shop_id, session_id, after))
         elif url.path == "/staff":
             self._send(200, STAFF_PAGE_FILE.read_bytes(), "text/html; charset=utf-8")
-        elif url.path.startswith("/store/"):  # a demo shop's product page ("Buy on website" when it has no website)
-            parts = url.path.split("/")
-            if len(parts) != 4 or not shop_allowed(parts[2]) or not shop_tools.load_settings(parts[2]).get("demo_store"):
-                return self._json(404, {"error": "Not found"})
-            self._send(200, STORE_PAGE_FILE.read_bytes(), "text/html; charset=utf-8")
-        elif url.path == "/api/product":
-            query = parse_qs(url.query)
-            shop_id, item_id = query.get("shop", [""])[0], query.get("id", [""])[0]
-            session_id = query.get("session", [""])[0][:64]
-            if not shop_allowed(shop_id):
-                return self._json(404, {"error": "Not found"})
-            lock = agent.price_lock(shop_id, session_id) if agent and session_id else {}
-            cards = shop_tools.product_cards(shop_id, [item_id], query.get("lang", ["ar"])[0], lock)
-            if not cards:
-                return self._json(404, {"error": "Not found"})
-            item = next(i for i in shop_tools.load_catalog(shop_id) if i["id"] == item_id)
-            self._json(200, {**cards[0], "sized": bool(item.get("weight_note"))})  # rings: a size choice on the page
         elif url.path == "/make-link":  # for the person giving demos: a chat link with the prospect's shop name
             shop_id = parse_qs(url.query).get("shop", [DEFAULT_SHOP])[0]
             if not shop_allowed(shop_id):
