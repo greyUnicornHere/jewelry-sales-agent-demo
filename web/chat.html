@@ -1,0 +1,1092 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#f7f4ee" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#151311" media="(prefers-color-scheme: dark)">
+<title>Jewelry Sales Chat</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600&family=IBM+Plex+Sans+Arabic:wght@400;500;600&family=Noto+Naskh+Arabic:wght@500;600&display=swap" rel="stylesheet">
+<style>
+  /* ---------- Design tokens ---------- */
+  :root {
+    --bg: #f7f4ee;            /* warm ivory */
+    --surface: #ffffff;
+    --surface-2: #f1ece3;     /* soft fills: customer bubble, inputs */
+    --ink: #1d1a17;
+    --ink-2: #5f574e;         /* secondary text */
+    --ink-3: #9a9086;         /* tertiary text */
+    --line: rgba(29, 26, 23, 0.09);
+    --gold: #a47a2c;          /* champagne gold accent */
+    --gold-2: #c9a45c;
+    --gold-soft: rgba(164, 122, 44, 0.10);
+    --primary: #1d1a17;       /* primary buttons */
+    --on-primary: #ffffff;
+    --danger: #a3341f;
+    --danger-soft: rgba(163, 52, 31, 0.08);
+    --header-bg: rgba(247, 244, 238, 0.78);
+    --shadow-sm: 0 1px 2px rgba(29, 26, 23, 0.05), 0 1px 1px rgba(29, 26, 23, 0.03);
+    --shadow-md: 0 8px 28px rgba(29, 26, 23, 0.08), 0 2px 6px rgba(29, 26, 23, 0.04);
+    --shadow-lg: 0 18px 50px rgba(29, 26, 23, 0.12), 0 4px 12px rgba(29, 26, 23, 0.05);
+    --radius: 20px;
+    --sans: "IBM Plex Sans Arabic", -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif;
+    --serif: "Cormorant Garamond", "Noto Naskh Arabic", Georgia, serif;
+    --column: 720px;
+    --indent: 40px;           /* agent content lines up after the avatar */
+    color-scheme: light;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --bg: #151311; --surface: #1d1a17; --surface-2: #262220;
+      --ink: #f3eee6; --ink-2: #b9afa3; --ink-3: #82786d;
+      --line: rgba(243, 238, 230, 0.09);
+      --gold: #d6b06a; --gold-2: #e6c88b; --gold-soft: rgba(214, 176, 106, 0.12);
+      --primary: #f3eee6; --on-primary: #151311;
+      --danger: #f0a090; --danger-soft: rgba(240, 160, 144, 0.10);
+      --header-bg: rgba(21, 19, 17, 0.72);
+      --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.3);
+      --shadow-md: 0 8px 28px rgba(0, 0, 0, 0.35);
+      --shadow-lg: 0 18px 50px rgba(0, 0, 0, 0.45);
+      color-scheme: dark;
+    }
+  }
+  :root[data-theme="dark"] {
+    --bg: #151311; --surface: #1d1a17; --surface-2: #262220;
+    --ink: #f3eee6; --ink-2: #b9afa3; --ink-3: #82786d;
+    --line: rgba(243, 238, 230, 0.09);
+    --gold: #d6b06a; --gold-2: #e6c88b; --gold-soft: rgba(214, 176, 106, 0.12);
+    --primary: #f3eee6; --on-primary: #151311;
+    --danger: #f0a090; --danger-soft: rgba(240, 160, 144, 0.10);
+    --header-bg: rgba(21, 19, 17, 0.72);
+    --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.3);
+    --shadow-md: 0 8px 28px rgba(0, 0, 0, 0.35);
+    --shadow-lg: 0 18px 50px rgba(0, 0, 0, 0.45);
+    color-scheme: dark;
+  }
+
+  /* ---------- Base ---------- */
+  * { box-sizing: border-box; }
+  [hidden] { display: none !important; }
+  html, body { height: 100%; }
+  body {
+    margin: 0; background: var(--bg); color: var(--ink);
+    font-family: var(--sans); font-size: 16px; line-height: 1.6;
+    -webkit-font-smoothing: antialiased; text-rendering: optimizeLegibility;
+  }
+  body::before {  /* a soft warm glow behind everything */
+    content: ""; position: fixed; inset: 0; pointer-events: none; z-index: -1;
+    background: radial-gradient(900px 500px at 50% -10%, var(--gold-soft), transparent 70%);
+  }
+  button, input, select, textarea { font: inherit; color: inherit; }
+  button { cursor: pointer; }
+  :focus-visible { outline: 2px solid var(--gold); outline-offset: 2px; }
+  .app { height: 100dvh; display: flex; flex-direction: column; }
+  .column { width: 100%; max-width: var(--column); margin-inline: auto; padding-inline: 16px; }
+
+  /* ---------- Header (frosted glass) ---------- */
+  header {
+    position: sticky; top: 0; z-index: 10;
+    background: var(--header-bg);
+    -webkit-backdrop-filter: saturate(180%) blur(20px); backdrop-filter: saturate(180%) blur(20px);
+    border-bottom: 1px solid var(--line);
+  }
+  header .column { display: flex; align-items: center; gap: 12px; height: 64px; }
+  .logo {
+    flex: 0 0 auto; width: 38px; height: 38px; border-radius: 50%;
+    display: grid; place-items: center;
+    background: linear-gradient(145deg, var(--gold-2), var(--gold));
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.35), var(--shadow-sm);
+  }
+  .logo svg { width: 18px; height: 18px; }
+  .brand { min-width: 0; flex: 1; }
+  .brand h1 {
+    margin: 0; font-family: var(--serif); font-weight: 600; font-size: 20px; line-height: 1.2;
+    white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+  }
+  .status { display: flex; align-items: center; gap: 6px; font-size: 12.5px; color: var(--ink-2); }
+  .status::before {
+    content: ""; width: 7px; height: 7px; border-radius: 50%; background: #3fa66b;
+    box-shadow: 0 0 0 3px rgba(63, 166, 107, 0.15);
+  }
+  #langToggle {
+    flex: 0 0 auto; height: 34px; padding: 0 14px; border-radius: 999px;
+    border: 1px solid var(--line); background: var(--surface); color: var(--ink-2);
+    font-size: 13.5px; font-weight: 500; box-shadow: var(--shadow-sm);
+    transition: color .2s, border-color .2s, transform .2s;
+  }
+  #langToggle:hover { color: var(--ink); border-color: var(--gold); }
+  #langToggle:active { transform: scale(0.97); }
+
+  /* ---------- Language chooser (welcome screen) ---------- */
+  .chooser { flex: 1; display: grid; place-items: center; padding: 32px 16px; }
+  .welcome { width: 100%; max-width: 440px; text-align: center; animation: rise .6s cubic-bezier(.2, .8, .2, 1) both; }
+  .welcome .logo { width: 64px; height: 64px; margin: 0 auto 22px; box-shadow: var(--shadow-md); }
+  .welcome .logo svg { width: 28px; height: 28px; }
+  .welcome h2 {
+    margin: 0; font-family: var(--serif); font-weight: 600; font-size: clamp(30px, 6vw, 40px); line-height: 1.15;
+  }
+  .welcome .sub { margin: 6px 0 0; font-family: var(--serif); font-size: 20px; color: var(--ink-2); }
+  .welcome .ask { margin: 28px 0 14px; font-size: 14px; color: var(--ink-3); }
+  .lang-options { display: grid; gap: 12px; }
+  .lang-option {
+    display: flex; align-items: center; justify-content: space-between; gap: 12px;
+    width: 100%; padding: 18px 20px; border-radius: 16px; text-align: start;
+    border: 1px solid var(--line); background: var(--surface); box-shadow: var(--shadow-sm);
+    transition: transform .2s, box-shadow .2s, border-color .2s;
+  }
+  .lang-option:hover { transform: translateY(-1px); box-shadow: var(--shadow-md); border-color: var(--gold); }
+  .lang-option:active { transform: scale(0.99); }
+  .lang-option strong { display: block; font-size: 18px; font-weight: 600; }
+  .lang-option span { display: block; font-size: 13.5px; color: var(--ink-2); }
+  .lang-option .arrow { color: var(--ink-3); font-size: 20px; line-height: 1; }
+
+  /* ---------- Chat ---------- */
+  #chat { flex: 1; display: flex; flex-direction: column; min-height: 0; }
+  #scroller { flex: 1; overflow-y: auto; scroll-behavior: smooth; }
+  #log { display: flex; flex-direction: column; gap: 14px; padding-top: 28px; padding-bottom: 24px; }
+  #log > * { animation: rise .35s cubic-bezier(.2, .8, .2, 1) both; }
+
+  .msg { white-space: pre-wrap; overflow-wrap: anywhere; unicode-bidi: plaintext; }
+  .agent {  /* assistant text sits on the page, like a well-set paragraph */
+    position: relative; align-self: stretch; padding-inline-start: var(--indent);
+    font-size: 16.5px; line-height: 1.7; color: var(--ink);
+  }
+  .agent.first::before {  /* small gold avatar at the start of each agent turn */
+    content: ""; position: absolute; inset-inline-start: 0; top: 2px; width: 28px; height: 28px; border-radius: 50%;
+    background: linear-gradient(145deg, var(--gold-2), var(--gold)) center / cover;
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.35);
+    -webkit-mask: radial-gradient(circle, #000 99%, transparent 100%);
+  }
+  .agent.first::after {  /* diamond mark inside the avatar */
+    content: ""; position: absolute; inset-inline-start: 9px; top: 11px; width: 10px; height: 10px;
+    background: #fff; clip-path: polygon(50% 0, 100% 40%, 50% 100%, 0 40%); opacity: .95;
+  }
+  .customer {
+    align-self: flex-end; max-width: 80%; padding: 10px 16px;
+    background: var(--surface-2); border-radius: 22px; font-size: 16px;
+  }
+  /* a person from the shop's sales team writing in the chat */
+  .staff {
+    align-self: flex-start; max-width: 85%; margin-inline-start: var(--indent); padding: 10px 16px 11px;
+    background: var(--surface); border: 1px solid color-mix(in srgb, var(--gold) 35%, var(--line));
+    border-radius: 22px; border-start-start-radius: 8px; box-shadow: var(--shadow-sm); font-size: 16px;
+  }
+  .staff .who { display: block; margin-bottom: 2px; font-size: 12px; font-weight: 600; color: var(--gold); letter-spacing: .01em; }
+  .sysnote {
+    align-self: center; max-width: 90%; padding: 6px 14px; border-radius: 999px; text-align: center;
+    background: var(--surface-2); color: var(--ink-2); font-size: 13px; line-height: 1.5;
+  }
+  .connecting {
+    margin-inline-start: var(--indent); max-width: 440px; display: flex; align-items: center; gap: 14px;
+    padding: 16px 18px; background: var(--surface); border: 1px solid var(--line);
+    border-radius: var(--radius); box-shadow: var(--shadow-md);
+  }
+  .connecting .ring {
+    flex: 0 0 auto; width: 34px; height: 34px; border-radius: 50%; position: relative;
+    background: linear-gradient(145deg, var(--gold-2), var(--gold));
+  }
+  .connecting .ring::after {
+    content: ""; position: absolute; inset: -5px; border-radius: 50%; border: 2px solid var(--gold);
+    animation: pulse 1.6s ease-out infinite;
+  }
+  .connecting strong { display: block; font-weight: 600; font-size: 15.5px; }
+  .connecting span { display: block; font-size: 13px; color: var(--ink-3); }
+  .error {
+    align-self: center; max-width: 90%; padding: 10px 14px; border-radius: 12px;
+    background: var(--danger-soft); color: var(--danger); font-size: 14px; text-align: center;
+  }
+
+  /* typing indicator: three soft dots */
+  .typing { display: flex; gap: 5px; padding-inline-start: var(--indent); height: 24px; align-items: center; }
+  .typing i { width: 7px; height: 7px; border-radius: 50%; background: var(--ink-3); animation: blink 1.2s infinite both; }
+  .typing i:nth-child(2) { animation-delay: .15s; }
+  .typing i:nth-child(3) { animation-delay: .3s; }
+
+  /* ---------- Product cards: a swipeable row ---------- */
+  .cards {
+    display: flex; gap: 12px; overflow-x: auto; scroll-snap-type: x mandatory;
+    margin-inline: -16px; padding-block: 4px 10px; padding-inline: calc(16px + var(--indent)) 16px;
+    scroll-padding-inline: calc(16px + var(--indent)) 16px;  /* snapping keeps the first card's margin */
+    scrollbar-width: none;
+  }
+  .cards::-webkit-scrollbar { display: none; }
+  .card {
+    flex: 0 0 236px; scroll-snap-align: start; display: flex; flex-direction: column;
+    background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius);
+    overflow: hidden; box-shadow: var(--shadow-sm); transition: transform .25s, box-shadow .25s;
+  }
+  .card:hover { transform: translateY(-2px); box-shadow: var(--shadow-md); }
+  .card .pic { position: relative; aspect-ratio: 1 / 1; background: var(--surface-2); }
+  .card img { width: 100%; height: 100%; object-fit: cover; display: block; }
+  .card .tag {
+    position: absolute; inset-inline-start: 10px; top: 10px; padding: 3px 9px; border-radius: 999px;
+    font-size: 11px; font-weight: 500; color: #fff; background: rgba(20, 18, 16, 0.55);
+    -webkit-backdrop-filter: blur(8px); backdrop-filter: blur(8px);
+  }
+  .card .body { padding: 14px 16px 16px; display: flex; flex-direction: column; gap: 3px; }
+  .card .name { font-weight: 600; font-size: 15.5px; line-height: 1.35; }
+  .card .meta { font-size: 13px; color: var(--ink-3); }
+  .card .price { margin-top: 6px; font-weight: 600; font-size: 17px; line-height: 1.5; color: var(--ink); }
+  .card .vat { font-size: 12px; line-height: 1.3; color: var(--ink-3); }
+  .card .desc { margin-top: 4px; font-size: 13.5px; line-height: 1.5; color: var(--ink-2); }
+
+  /* ---------- Occasion buttons ---------- */
+  /* Choosing a product */
+  .card .choose {
+    margin: auto 16px 16px; height: 40px; border-radius: 12px; font-weight: 600; font-size: 14.5px;
+    border: 1px solid var(--line); background: var(--surface-2); color: var(--ink);
+    transition: border-color .2s, background .2s, color .2s, transform .15s;
+  }
+  .card .choose:hover:not(:disabled) { border-color: var(--gold); }
+  .card .choose:active:not(:disabled) { transform: scale(0.98); }
+  .card .choose:disabled { cursor: default; }
+  .card.selected { border-color: var(--gold); box-shadow: 0 0 0 2px var(--gold-soft), var(--shadow-md); }
+  .card.selected .choose { background: var(--primary); color: var(--on-primary); border-color: var(--primary); opacity: 1; }
+  .cards.decided .card:not(.selected) { opacity: .45; }
+
+  /* Next steps after choosing */
+  .actions { display: flex; flex-wrap: wrap; gap: 8px; padding-inline-start: var(--indent); }
+  .actions a, .actions button {
+    display: inline-flex; align-items: center; gap: 7px; padding: 9px 15px; border-radius: 999px;
+    font-size: 14.5px; font-weight: 500; text-decoration: none; cursor: pointer;
+    border: 1px solid var(--line); background: var(--surface); color: var(--ink); box-shadow: var(--shadow-sm);
+    transition: border-color .2s, background .2s, transform .15s;
+  }
+  .actions a:hover, .actions button:hover:not(:disabled) { border-color: var(--gold); }
+  .actions a:active, .actions button:active:not(:disabled) { transform: scale(0.97); }
+  .actions .primary { background: var(--primary); color: var(--on-primary); border-color: var(--primary); }
+  .actions button:disabled { opacity: .45; cursor: default; }
+  .actions svg { width: 16px; height: 16px; flex: 0 0 auto; }
+  .note { padding-inline-start: var(--indent); font-size: 13px; color: var(--ink-3); }
+
+  .choices { display: flex; flex-wrap: wrap; gap: 8px; padding-inline-start: var(--indent); }
+  .choices button {
+    padding: 8px 15px; border-radius: 999px; font-size: 14.5px;
+    border: 1px solid var(--line); background: var(--surface); color: var(--ink);
+    box-shadow: var(--shadow-sm); transition: border-color .2s, background .2s, transform .15s, opacity .2s;
+  }
+  .choices button:hover:not(:disabled) { border-color: var(--gold); background: var(--gold-soft); }
+  .choices button:active:not(:disabled) { transform: scale(0.97); }
+  .choices button:disabled { cursor: default; opacity: 0.4; box-shadow: none; }
+  .choices button.picked { opacity: 1; background: var(--primary); color: var(--on-primary); border-color: var(--primary); }
+
+  /* ---------- Forms (contact + visit booking) ---------- */
+  .reqform {
+    margin-inline-start: var(--indent); max-width: 440px; display: flex; flex-direction: column; gap: 14px;
+    padding: 22px; background: var(--surface); border: 1px solid var(--line);
+    border-radius: var(--radius); box-shadow: var(--shadow-md);
+  }
+  .reqform h3 { margin: 0 0 2px; font-family: var(--serif); font-weight: 600; font-size: 22px; line-height: 1.25; }
+  .reqform label { display: flex; flex-direction: column; gap: 6px; font-size: 13px; font-weight: 500; color: var(--ink-2); }
+  .reqform input[type=text], .reqform input[type=tel], .reqform input[type=date], .reqform select, .reqform textarea {
+    width: 100%; padding: 12px 14px; font-size: 15.5px; font-weight: 400; color: var(--ink);
+    background: var(--surface-2); border: 1px solid transparent; border-radius: 12px;
+    transition: border-color .2s, background .2s, box-shadow .2s;
+  }
+  .reqform textarea { resize: vertical; min-height: 72px; line-height: 1.5; }
+  .reqform input:focus, .reqform select:focus, .reqform textarea:focus {
+    outline: none; background: var(--surface); border-color: var(--gold); box-shadow: 0 0 0 4px var(--gold-soft);
+  }
+  .reqform .consent {
+    flex-direction: row; align-items: flex-start; gap: 10px;
+    font-size: 13.5px; font-weight: 400; line-height: 1.5; color: var(--ink-2);
+  }
+  .reqform .consent input { margin-top: 3px; width: 17px; height: 17px; accent-color: var(--gold); flex: 0 0 auto; }
+  .reqform button[type=submit] {
+    height: 48px; border: 0; border-radius: 14px; font-weight: 600; font-size: 15.5px;
+    background: var(--primary); color: var(--on-primary); transition: opacity .2s, transform .15s;
+  }
+  .reqform button[type=submit]:hover:not(:disabled) { opacity: .9; }
+  .reqform button[type=submit]:active:not(:disabled) { transform: scale(0.99); }
+  .reqform button:disabled { opacity: .4; cursor: default; }
+  .reqform .problem { color: var(--danger); font-size: 13.5px; }
+  .reqform .done { display: flex; gap: 12px; align-items: flex-start; line-height: 1.6; white-space: pre-wrap; }
+  .reqform .done::before {
+    content: "✓"; flex: 0 0 auto; width: 28px; height: 28px; border-radius: 50%; display: grid; place-items: center;
+    background: #3fa66b; color: #fff; font-size: 15px; font-weight: 600;
+  }
+
+  /* ---------- Composer (floating pill) ---------- */
+  .bottom { padding-bottom: max(14px, env(safe-area-inset-bottom)); background: linear-gradient(transparent, var(--bg) 30%); }
+  .chips { display: flex; gap: 8px; overflow-x: auto; padding: 4px 2px 12px; scrollbar-width: none; }
+  .chips::-webkit-scrollbar { display: none; }
+  .chips button {
+    flex: 0 0 auto; padding: 9px 15px; border-radius: 999px; font-size: 14px;
+    border: 1px solid var(--line); background: var(--surface); color: var(--ink-2);
+    box-shadow: var(--shadow-sm); transition: color .2s, border-color .2s;
+  }
+  .chips button:hover { color: var(--ink); border-color: var(--gold); }
+  #composer {
+    display: flex; align-items: flex-end; gap: 8px; padding: 8px;
+    background: var(--surface); border: 1px solid var(--line); border-radius: 26px; box-shadow: var(--shadow-lg);
+    transition: border-color .2s, box-shadow .2s;
+  }
+  #composer:focus-within { border-color: color-mix(in srgb, var(--gold) 45%, var(--line)); }
+  #composer textarea {
+    flex: 1; resize: none; border: 0; outline: none; background: transparent;
+    padding: 9px 10px; font-size: 16px; line-height: 1.5; max-height: 140px; height: 42px;
+  }
+  #composer textarea::placeholder { color: var(--ink-3); }
+  #send {
+    flex: 0 0 auto; width: 40px; height: 40px; border-radius: 50%; border: 0; display: grid; place-items: center;
+    background: var(--primary); color: var(--on-primary); transition: opacity .2s, transform .15s;
+  }
+  #send:hover:not(:disabled) { transform: scale(1.04); }
+  #send:disabled { opacity: .25; cursor: default; }
+  #send svg { width: 18px; height: 18px; }
+  .footnote { text-align: center; font-size: 12px; color: var(--ink-3); padding-top: 10px; }
+
+  /* ---------- Motion ---------- */
+  @keyframes rise { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: none; } }
+  @keyframes blink { 0%, 80%, 100% { opacity: .25; transform: scale(.85); } 40% { opacity: 1; transform: none; } }
+  @keyframes pulse { from { opacity: .7; transform: scale(.85); } to { opacity: 0; transform: scale(1.35); } }
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after { animation: none !important; transition: none !important; scroll-behavior: auto !important; }
+  }
+
+  @media (max-width: 480px) {
+    :root { --indent: 0px; }
+    .agent.first { padding-top: 36px; }
+    .agent.first::before { top: 0; }
+    .agent.first::after { top: 9px; }
+    .card { flex-basis: 74%; }
+    .reqform { padding: 18px; }
+    .staff { max-width: 90%; }
+  }
+</style>
+</head>
+<body>
+<div class="app">
+  <header id="topbar">
+    <div class="column">
+      <div class="logo" aria-hidden="true">
+        <svg viewBox="0 0 24 24" fill="none"><path d="M6 4h12l4 5-10 11L2 9l4-5Z" fill="#fff"/><path d="M2 9h20M9 4l3 16M15 4l-3 16" stroke="rgba(164,122,44,.55)" stroke-width="1"/></svg>
+      </div>
+      <div class="brand">
+        <h1 id="shopName">…</h1>
+        <div class="status" id="status"></div>
+      </div>
+      <button id="langToggle" type="button" hidden></button>
+    </div>
+  </header>
+
+  <div class="chooser" id="chooser" hidden>
+    <div class="welcome">
+      <div class="logo" aria-hidden="true">
+        <svg viewBox="0 0 24 24" fill="none"><path d="M6 4h12l4 5-10 11L2 9l4-5Z" fill="#fff"/><path d="M2 9h20M9 4l3 16M15 4l-3 16" stroke="rgba(164,122,44,.55)" stroke-width="1"/></svg>
+      </div>
+      <h2 id="welcomeAr" lang="ar">أهلاً وسهلاً</h2>
+      <p class="sub" lang="en">Welcome</p>
+      <p class="ask">اختر اللغة · Choose your language</p>
+      <div class="lang-options">
+        <button type="button" class="lang-option" data-lang="ar" lang="ar" dir="rtl">
+          <div><strong>العربية</strong><span>تحدث معنا بالعربية</span></div><span class="arrow">‹</span>
+        </button>
+        <button type="button" class="lang-option" data-lang="en" lang="en" dir="ltr">
+          <div><strong>English</strong><span>Chat with us in English</span></div><span class="arrow">›</span>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <div id="chat" hidden>
+    <div id="scroller">
+      <div class="column"><div id="log" aria-live="polite"></div></div>
+    </div>
+    <div class="bottom">
+      <div class="column">
+        <div class="chips" id="chips"></div>
+        <form id="composer">
+          <textarea id="input" rows="1"></textarea>
+          <button id="send" type="submit" disabled>
+            <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 19V5M5.5 11.5 12 5l6.5 6.5" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </button>
+        </form>
+        <div class="footnote" id="footnote"></div>
+      </div>
+    </div>
+  </div>
+</div>
+<script>
+  // All texts of the page, in both languages.
+  const T = {
+    ar: {
+      dir: "rtl", other: "English", placeholder: "اكتب رسالتك…", send: "إرسال", typing: "يكتب…",
+      status: "مستشارك الذكي · متاح الآن",
+      footnote: "مساعد ذكي (AI). الأسعار من نظام المتجر.",
+      chips: ["أبحث عن شبكة", "هدية لمولودة جديدة", "خواتم ذهب لي", "هدية للوالدة"],
+      sample: "صورة توضيحية", karat: (k, w) => `عيار ${k} · ${w} جرام`, currency: " ريال", vat: "شامل الضريبة",
+      onRequest: "السعر عند الطلب",
+      formTitle: "اترك بياناتك ونتواصل معك", name: "الاسم", phone: "رقم الجوال", request: "طلبك",
+      consent: "أوافق على تواصل المتجر معي بخصوص هذا الطلب.", submit: "إرسال الطلب",
+      missing: "الرجاء كتابة الاسم ورقم جوال صحيح والطلب، والموافقة على التواصل.",
+      thanks: (n, ref, time) => `شكرًا ${n}، وصلنا طلبك (رقم ${ref}).\nبنتواصل معك ${time}.`,
+      bookTitle: "احجز موعد زيارة خاص", day: "اليوم", time: "الوقت", chooseTime: "اختر الوقت",
+      notes: "ملاحظات (اختياري)", bookSubmit: "احجز الموعد",
+      bookMissing: "الرجاء كتابة الاسم ورقم جوال صحيح، واختيار اليوم والوقت، والموافقة على التواصل.",
+      badTime: "هذا الوقت غير متاح. الرجاء اختيار يوم ووقت آخر.",
+      bookThanks: (n, ref, d, tm, time) => `شكرًا ${n}، وصلنا طلب زيارتك يوم ${d} الساعة ${tm} (رقم ${ref}).\nبنتصل عليك لتأكيد الموعد ${time}. نتشرف بزيارتكم.`,
+      noServer: "تعذر الاتصال بالخادم. هل البرنامج يعمل؟",
+      choose: "اختيار", chosen: "تم الاختيار ✓", chosenMsg: (n) => `أبغى هذي القطعة: ${n}`,
+      buy: "شراء من الموقع", reserve: "حجز / تواصل مع المبيعات", share: "مشاركة", similar: "قطع مشابهة",
+      similarMsg: (n) => `عندكم قطع مشابهة لـ ${n}؟`,
+      whatsapp: "واتساب", copy: "نسخ", copied: "تم النسخ ✓", shareFrom: (s) => `من ${s}`,
+      contactSales: "تواصل مع المبيعات", contactHint: "يفتح محادثة واتساب مع فريق المبيعات",
+      salesPrefill: (r) => `مرحبًا، أتواصل معكم من محادثة الموقع. أبحث عن: ${r}`,
+      liveSales: "تحدث مع فريق المبيعات الآن", orWhatsapp: "أو راسلنا واتساب",
+      connecting: "جاري توصيلك بفريق المبيعات…", connectingHint: "عادةً خلال أقل من دقيقة. تقدر تكمل المحادثة هنا.",
+      staffRole: "فريق المبيعات", staffJoined: (n) => `انضم ${n} من فريق المبيعات إلى المحادثة`,
+      staffLeft: (n) => `غادر ${n} المحادثة. المساعد الذكي يكمل معك.`,
+      busy: "فريق المبيعات مشغول حاليًا. تواصل معنا وبنرد عليك قريبًا.",
+      offline: "فريق المبيعات غير متصل حاليًا. تواصل معنا وبنرد عليك قريبًا.",
+      statusStaff: (n) => `${n} · فريق المبيعات · متصل الآن`,
+    },
+    en: {
+      dir: "ltr", other: "العربية", placeholder: "Message…", send: "Send", typing: "typing…",
+      status: "Your AI jewelry advisor · online",
+      footnote: "AI assistant. Prices come from the shop's system.",
+      chips: ["Engagement gold set", "Gift for a new baby", "Gold rings for me", "Gift for my mother"],
+      sample: "Sample image", karat: (k, w) => `${k}K · ${w} g`, currency: " SAR", vat: "incl. VAT",
+      onRequest: "Price on request",
+      formTitle: "Leave your details. We will contact you.", name: "Name", phone: "Mobile number", request: "Your request",
+      consent: "I agree that the shop contacts me about this request.", submit: "Send request",
+      missing: "Please write your name, a correct mobile number and your request, and tick the box.",
+      thanks: (n, ref, time) => `Thank you, ${n}. We got your request (number ${ref}).\nWe will contact you ${time}.`,
+      bookTitle: "Book a private visit", day: "Day", time: "Time", chooseTime: "Choose a time",
+      notes: "Notes (optional)", bookSubmit: "Book visit",
+      bookMissing: "Please write your name and a correct mobile number, choose a day and time, and tick the box.",
+      badTime: "This time is not available. Please choose another day or time.",
+      bookThanks: (n, ref, d, tm, time) => `Thank you, ${n}. We got your visit request for ${d} at ${tm} (number ${ref}).\nWe will call you to confirm ${time}.`,
+      noServer: "Cannot reach the server. Is the app still running?",
+      choose: "Choose", chosen: "Chosen ✓", chosenMsg: (n) => `I'd like this one: ${n}`,
+      buy: "Buy on website", reserve: "Reserve / talk to sales", share: "Share", similar: "Show similar",
+      similarMsg: (n) => `Can you show me pieces similar to ${n}?`,
+      whatsapp: "WhatsApp", copy: "Copy", copied: "Copied ✓", shareFrom: (s) => `From ${s}`,
+      contactSales: "Contact sales", contactHint: "Opens a WhatsApp chat with our sales team",
+      salesPrefill: (r) => `Hello, I'm contacting you from the website chat. I'm looking for: ${r}`,
+      liveSales: "Chat with our sales team now", orWhatsapp: "Or message us on WhatsApp",
+      connecting: "Connecting you to our sales team…", connectingHint: "Usually less than a minute. You can keep chatting here.",
+      staffRole: "Sales team", staffJoined: (n) => `${n} from our sales team joined the chat`,
+      staffLeft: (n) => `${n} left the chat. The AI assistant will continue to help you.`,
+      busy: "Our sales team is busy right now. Contact us and we will reply soon.",
+      offline: "Our sales team is not online right now. Contact us and we will reply soon.",
+      statusStaff: (n) => `${n} · Sales team · online`,
+    },
+  };
+
+  const params = new URLSearchParams(location.search);
+  const shop = params.get("shop") || "demo-shop";
+  // A demo link can carry a prospect's shop name (made on /make-link); the chat then uses that name.
+  const shopLabel = { ar: (params.get("name_ar") || "").trim().slice(0, 60), en: (params.get("name_en") || "").trim().slice(0, 60) };
+  const sessionId = (crypto.randomUUID && crypto.randomUUID()) || String(Date.now()) + Math.random().toString(16).slice(2);
+  const $ = (id) => document.getElementById(id);
+  const log = $("log"), input = $("input"), send = $("send"), scroller = $("scroller");
+  let shopInfo = null;
+  let lang = null;
+  let customerHasWritten = false;
+  let busy = false;
+  // Live chat with the sales team: who is answering ("ai", "waiting" or "staff"), and what was seen already.
+  let liveMode = "ai", staffName = "", liveSeq = 0, polling = false;
+  let waitCard = null;  // the "Connecting you…" card while the customer waits for a person
+  let waitRequest = "";
+
+  function el(tag, cls, text) {
+    const node = document.createElement(tag);
+    if (cls) node.className = cls;
+    if (text !== undefined) node.textContent = text;
+    return node;
+  }
+
+  function scrollDown() {
+    requestAnimationFrame(() => { scroller.scrollTop = scroller.scrollHeight; });
+  }
+
+  // True when the last thing in the chat is from the agent (so no new avatar is needed).
+  function agentTurnOpen() {
+    const last = log.lastElementChild;
+    return last && !["customer", "error", "typing", "staff", "sysnote"].some((c) => last.classList.contains(c));
+  }
+
+  function showStatus() {
+    $("status").textContent = liveMode === "staff" && staffName ? T[lang].statusStaff(staffName) : T[lang].status;
+  }
+
+  function add(text, cls) {
+    const div = el("div", "msg " + cls, text);
+    if (cls === "agent" && !agentTurnOpen()) div.classList.add("first");
+    div.dir = "auto";
+    log.appendChild(div);
+    scrollDown();
+    return div;
+  }
+
+  function typingDots() {
+    const t = el("div", "typing");
+    t.setAttribute("aria-label", T[lang].typing);
+    t.append(el("i"), el("i"), el("i"));
+    return t;
+  }
+
+  function updateSend() { send.disabled = busy || !input.value.trim(); }
+
+  function autoGrow() {
+    input.style.height = "auto";
+    input.style.height = Math.min(input.scrollHeight, 140) + "px";
+    updateSend();
+  }
+
+  function setLanguage(newLang) {
+    lang = newLang;
+    const t = T[lang];
+    document.documentElement.lang = lang;
+    document.documentElement.dir = t.dir;
+    $("shopName").textContent = lang === "ar" ? shopInfo.shop_name_ar : shopInfo.shop_name_en;
+    showStatus();
+    document.title = shopInfo.shop_name_en;
+    $("langToggle").textContent = t.other;
+    $("langToggle").hidden = false;
+    input.placeholder = t.placeholder;
+    send.setAttribute("aria-label", t.send);
+    $("footnote").textContent = t.footnote;
+    const chips = $("chips");
+    chips.replaceChildren(...t.chips.map((c) => {
+      const b = el("button", "", c);
+      b.type = "button";
+      b.addEventListener("click", () => sendMessage(c));
+      return b;
+    }));
+    $("chooser").hidden = true;
+    $("topbar").hidden = false;
+    $("chat").hidden = false;
+    if (!customerHasWritten) {  // greet again in the new language until the chat has started
+      log.replaceChildren();
+      add(lang === "ar" ? shopInfo.greeting_ar : shopInfo.greeting_en, "agent");
+    }
+    if (!polling) { polling = true; pollLive(); }
+    input.focus();
+  }
+
+  async function loadShop() {
+    if (location.protocol === "file:") {
+      $("chat").hidden = false;
+      add("This page only works through the app. Start the app (start.bat) and open http://localhost:8000/chat?shop=" + shop, "error");
+      return;
+    }
+    try {
+      const res = await fetch("/api/shop?shop=" + encodeURIComponent(shop));
+      shopInfo = await res.json();
+      if (!res.ok) throw new Error(shopInfo.error);
+    } catch (e) {
+      $("chat").hidden = false;
+      const why = shopInfo && shopInfo.error;  // e.g. the demo password is needed again
+      add(why && why !== "Shop not found" ? why : "Shop not found: " + shop, "error");
+      return;
+    }
+    if (shopLabel.ar || shopLabel.en) {
+      const ar = shopLabel.ar || shopLabel.en, en = shopLabel.en || shopLabel.ar;
+      shopInfo.greeting_ar = shopInfo.greeting_ar.split(shopInfo.shop_name_ar).join(ar);
+      shopInfo.greeting_en = shopInfo.greeting_en.split(shopInfo.shop_name_en).join(en);
+      shopInfo.shop_name_ar = ar;
+      shopInfo.shop_name_en = en;
+    }
+    $("welcomeAr").textContent = "أهلاً بك في " + shopInfo.shop_name_ar;
+    document.querySelector(".welcome .sub").textContent = "Welcome to " + shopInfo.shop_name_en;
+    // Every new chat starts with the language choice (the welcome screen stands alone).
+    $("chooser").hidden = false;
+    $("topbar").hidden = true;
+  }
+
+  function showCards(items) {
+    const t = T[lang];
+    const wrap = el("div", "cards");
+    wrap.dir = t.dir;  // keeps its direction if the customer switches language later
+    for (const p of items) {
+      const card = el("div", "card");
+      const pic = el("div", "pic");
+      if (p.image) {
+        const img = el("img");
+        img.src = p.image;
+        img.alt = p.name;
+        pic.appendChild(img);
+      }
+      if (p.sample_image) pic.appendChild(el("div", "tag", t.sample));
+      const body = el("div", "body");
+      body.appendChild(el("div", "name", p.name));
+      body.appendChild(el("div", "meta", t.karat(p.karat, p.weight_g)));
+      if (p.total_sar === null || p.total_sar === undefined) {
+        body.appendChild(el("div", "price", t.onRequest));  // no live gold price right now
+      } else {
+        const amount = Number(p.total_sar).toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+        // The VAT note sits on its own line, so it never touches the end of "ريال".
+        body.appendChild(el("div", "price", amount + t.currency));
+        body.appendChild(el("div", "vat", t.vat));
+      }
+      if (p.description) body.appendChild(el("div", "desc", p.description));
+      const choose = el("button", "choose", t.choose);
+      choose.type = "button";
+      choose.addEventListener("click", () => {
+        if (busy) return;
+        wrap.classList.add("decided");
+        wrap.querySelectorAll(".card").forEach((c) => c.classList.remove("selected"));
+        wrap.querySelectorAll(".choose").forEach((b) => { b.textContent = t.choose; });
+        card.classList.add("selected");
+        choose.textContent = t.chosen;
+        sendMessage(t.chosenMsg(p.name), { chosen: p });
+      });
+      card.append(pic, body, choose);
+      wrap.appendChild(card);
+    }
+    log.appendChild(wrap);
+    scrollDown();
+  }
+
+  // ---------- After the customer chooses a piece: next-step buttons ----------
+  const ICONS = {
+    buy: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 7h12l-1 13H7L6 7Z"/><path d="M9 7a3 3 0 0 1 6 0"/></svg>',
+    reserve: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 6h16v12H4z"/><path d="m4 7 8 6 8-6"/></svg>',
+    share: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 15V4M7.5 8.5 12 4l4.5 4.5"/><path d="M5 13v6h14v-6"/></svg>',
+    sales: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 12a8 8 0 0 1-11.6 7.1L4 20l1-4.2A8 8 0 1 1 20 12Z"/><path d="M9 10h6M9 14h4"/></svg>',
+    similar: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="4" width="7" height="7" rx="1.5"/><rect x="13" y="4" width="7" height="7" rx="1.5"/><rect x="4" y="13" width="7" height="7" rx="1.5"/><rect x="13" y="13" width="7" height="7" rx="1.5"/></svg>',
+  };
+
+  function actionButton(tag, kind, label) {
+    const b = el(tag, kind === "buy" || kind === "sales" ? "primary" : "");
+    b.innerHTML = ICONS[kind];  // fixed icons from this page, never customer text
+    b.appendChild(document.createTextNode(label));
+    if (tag === "button") b.type = "button";
+    return b;
+  }
+
+  function priceText(p) {
+    if (p.total_sar === null || p.total_sar === undefined) return T[lang].onRequest;
+    return Number(p.total_sar).toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 }) + T[lang].currency;
+  }
+
+  function showActions(p) {
+    const t = T[lang];
+    const bar = el("div", "actions");
+    bar.dir = t.dir;
+    if (p.url) {
+      const buy = actionButton("a", "buy", t.buy);
+      buy.href = p.url;
+      buy.target = "_blank";
+      buy.rel = "noopener";
+      bar.appendChild(buy);
+    }
+    const reserve = actionButton("button", "reserve", t.reserve);
+    reserve.addEventListener("click", () => reservePiece(p, reserve));
+    const share = actionButton("button", "share", t.share);
+    share.addEventListener("click", () => sharePiece(p, bar));
+    const similar = actionButton("button", "similar", t.similar);
+    similar.addEventListener("click", () => sendMessage(t.similarMsg(p.name)));
+    bar.append(reserve, share, similar);
+    log.appendChild(bar);
+    scrollDown();
+  }
+
+  // The way to reach the sales team without live chat: WhatsApp (message written in), or the contact form
+  // when the shop has no WhatsApp number in its settings.
+  function salesFallback(request, primary = true) {
+    const t = T[lang];
+    const number = shopInfo.sales_whatsapp;
+    if (number) {
+      const a = actionButton("a", "sales", primary ? t.contactSales : t.orWhatsapp);
+      if (!primary) a.className = "";
+      a.href = `https://wa.me/${number}?text=` + encodeURIComponent(t.salesPrefill(request || ""));
+      a.target = "_blank";
+      a.rel = "noopener";
+      return a;
+    }
+    const b = actionButton("button", "sales", t.contactSales);
+    b.addEventListener("click", async () => {
+      b.disabled = true;
+      try {
+        const res = await fetch("/api/contact", {
+          method: "POST", headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ shop, session_id: sessionId, request: request || "", language: lang }),
+        });
+        const data = await res.json();
+        if (!res.ok) throw new Error(data.error);
+        showForm(data);
+      } catch (e) { add(T[lang].noServer, "error"); b.disabled = false; }
+    });
+    return b;
+  }
+
+  function showSalesFallback(request, why) {
+    const t = T[lang];
+    if (why) add(why, "agent");
+    const bar = el("div", "actions");
+    bar.dir = t.dir;
+    bar.appendChild(salesFallback(request));
+    log.appendChild(bar);
+    if (shopInfo.sales_whatsapp) {
+      const hint = el("div", "note", t.contactHint);
+      hint.dir = t.dir;
+      log.appendChild(hint);
+    }
+    scrollDown();
+  }
+
+  // "Contact sales". When someone from the sales team is online (ev.live), the customer can chat with them
+  // right here; otherwise WhatsApp or the contact form.
+  function showContactSales(ev) {
+    if (!ev.live || liveMode === "staff") return showSalesFallback(ev.request || "");
+    const t = T[lang];
+    const bar = el("div", "actions");
+    bar.dir = t.dir;
+    const talk = actionButton("button", "sales", t.liveSales);
+    talk.addEventListener("click", () => askForPerson(ev.request || "", talk));
+    bar.appendChild(talk);
+    if (shopInfo.sales_whatsapp) bar.appendChild(salesFallback(ev.request || "", false));
+    log.appendChild(bar);
+    scrollDown();
+  }
+
+  async function askForPerson(request, button) {
+    button.disabled = true;
+    let status = "offline";
+    try {
+      const res = await fetch("/api/handoff", {
+        method: "POST", headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ shop, session_id: sessionId, request, language: lang }),
+      });
+      if (res.ok) status = (await res.json()).status;
+    } catch (e) { /* treated like nobody online */ }
+    if (status === "staff") return;  // a person is already in the chat
+    if (status !== "waiting") return showSalesFallback(request, T[lang].offline);
+    liveMode = "waiting";
+    waitRequest = request;
+    const t = T[lang];
+    waitCard = el("div", "connecting");
+    waitCard.dir = t.dir;
+    const words = el("div");
+    words.append(el("strong", "", t.connecting), el("span", "", t.connectingHint));
+    waitCard.append(el("div", "ring"), words);
+    log.appendChild(waitCard);
+    scrollDown();
+    pollLive();
+  }
+
+  function addStaff(name, text) {
+    const div = el("div", "msg staff");
+    div.dir = "auto";
+    div.append(el("span", "who", `${name} · ${T[lang].staffRole}`), document.createTextNode(text));
+    log.appendChild(div);
+    scrollDown();
+  }
+
+  // Checks every few seconds for messages from the sales team (more often while a person is involved).
+  let pollTimer = null;
+  async function pollLive() {
+    clearTimeout(pollTimer);
+    if (!document.hidden) {
+      try {
+        const res = await fetch(`/api/live?shop=${encodeURIComponent(shop)}&session_id=${encodeURIComponent(sessionId)}&after=${liveSeq}`);
+        if (res.ok) showLive(await res.json());
+      } catch (e) { /* the next check tries again */ }
+    }
+    pollTimer = setTimeout(pollLive, liveMode === "ai" ? 4000 : 1500);
+  }
+
+  function showLive(data) {
+    const t = T[lang];
+    for (const ev of data.events) {
+      if (ev.seq <= liveSeq) continue;  // already shown (two checks can overlap)
+      liveSeq = ev.seq;
+      if (ev.who === "staff") {
+        addStaff(ev.name, ev.text);
+      } else if (ev.event === "joined") {
+        if (waitCard) { waitCard.remove(); waitCard = null; }
+        add(t.staffJoined(ev.name), "sysnote");
+      } else if (ev.event === "left") {
+        add(t.staffLeft(ev.name || t.staffRole), "sysnote");
+      } else if (ev.event === "timeout" && waitCard) {
+        waitCard.remove(); waitCard = null;
+        showSalesFallback(waitRequest, t.busy);
+      }
+    }
+    liveSeq = Math.max(liveSeq, data.seq);
+    liveMode = data.mode;
+    staffName = data.staff_name;
+    showStatus();
+  }
+
+  document.addEventListener("visibilitychange", () => { if (!document.hidden && polling) pollLive(); });
+
+  // "Reserve / talk to sales": the contact form, made at once by the app (no AI wait), pre-filled with the piece.
+  async function reservePiece(p, button) {
+    if (busy) return;
+    button.disabled = true;
+    try {
+      const res = await fetch("/api/reserve", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ shop, session_id: sessionId, item_id: p.id, language: lang }),
+      });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error);
+      showForm(data);
+    } catch (e) {
+      add(T[lang].noServer, "error");
+      button.disabled = false;
+    }
+  }
+
+  // "Share": the phone's own share menu when available; otherwise WhatsApp and Copy.
+  async function sharePiece(p, bar) {
+    const t = T[lang];
+    const shopName = lang === "ar" ? shopInfo.shop_name_ar : shopInfo.shop_name_en;
+    const text = [p.name, priceText(p), t.shareFrom(shopName)].join("\n");
+    if (navigator.share) {
+      try { await navigator.share({ title: p.name, text, url: p.url || undefined }); return; }
+      catch (e) { if (e.name === "AbortError") return; }
+    }
+    if (bar.querySelector(".share-more")) return;
+    const more = el("div", "actions share-more");
+    more.dir = t.dir;
+    const full = p.url ? text + "\n" + p.url : text;
+    const wa = el("a", "", t.whatsapp);
+    wa.href = "https://wa.me/?text=" + encodeURIComponent(full);
+    wa.target = "_blank";
+    wa.rel = "noopener";
+    const copy = el("button", "", t.copy);
+    copy.type = "button";
+    copy.addEventListener("click", () => {
+      const area = el("textarea");  // works without https, unlike the newer clipboard API
+      area.value = full;
+      area.style.position = "fixed"; area.style.opacity = "0";
+      document.body.appendChild(area);
+      area.select();
+      try { document.execCommand("copy"); copy.textContent = t.copied; } catch (e) {}
+      area.remove();
+    });
+    more.append(wa, copy);
+    bar.after(more);
+    scrollDown();
+  }
+
+  // Tap buttons for the occasion question. Tapping sends the answer like a typed message.
+  function showChoices(options) {
+    const wrap = el("div", "choices");
+    wrap.dir = T[lang].dir;
+    for (const option of options) {
+      const b = el("button", "", option);
+      b.type = "button";
+      b.addEventListener("click", () => { b.classList.add("picked"); sendMessage(option); });
+      wrap.appendChild(b);
+    }
+    log.appendChild(wrap);
+    scrollDown();
+  }
+
+  function closeChoices() {  // old buttons stop working once the customer answers
+    document.querySelectorAll(".choices button").forEach((b) => { b.disabled = true; });
+  }
+
+  function field(labelText, control) {
+    const label = el("label", "", labelText);
+    label.appendChild(control);
+    return label;
+  }
+
+  // Visit times for a day ("YYYY-MM-DD"); Friday has its own list.
+  function slotsFor(day) {
+    if (!day) return [];
+    if (day === shopInfo.today) return shopInfo.today_slots || [];  // today: only times not yet passed
+    const friday = new Date(day + "T00:00:00Z").getUTCDay() === 5;
+    return friday ? shopInfo.visit_slots_friday : shopInfo.visit_slots;
+  }
+
+  // ev.kind is "request" (contact form) or "booking" (visit booking form).
+  function showForm(ev) {
+    const t = T[lang];
+    const booking = ev.kind === "booking";
+    const form = el("form", "reqform");
+    form.dir = t.dir;  // keeps its direction if the customer switches language later
+    form.noValidate = true;
+    const name = el("input"); name.type = "text"; name.autocomplete = "name"; name.maxLength = 80;
+    const phone = el("input"); phone.type = "tel"; phone.autocomplete = "tel"; phone.inputMode = "tel";
+    phone.placeholder = "05XXXXXXXX"; phone.dir = "ltr"; phone.maxLength = 20;
+    const request = el("textarea"); request.value = ev.request_text || ""; request.maxLength = 500; request.dir = "auto";
+    const consent = el("input"); consent.type = "checkbox";
+    const consentLabel = el("label", "consent");
+    consentLabel.append(consent, el("span", "", t.consent));
+    const problem = el("div", "problem"); problem.hidden = true;
+    const button = el("button", "", booking ? t.bookSubmit : t.submit); button.type = "submit";
+
+    const day = el("input"); day.type = "date";
+    const time = el("select");
+    if (booking) {
+      day.min = shopInfo.today;
+      const last = new Date(shopInfo.today + "T00:00:00Z"); last.setUTCDate(last.getUTCDate() + 30);
+      day.max = last.toISOString().slice(0, 10);
+      const fillTimes = () => {
+        time.replaceChildren(el("option", "", t.chooseTime));
+        time.firstChild.value = "";
+        for (const s of slotsFor(day.value)) { const o = el("option", "", s); o.value = s; time.appendChild(o); }
+      };
+      day.addEventListener("change", fillTimes);
+      fillTimes();
+      form.append(el("h3", "", t.bookTitle), field(t.name, name), field(t.phone, phone),
+                  field(t.day, day), field(t.time, time), field(t.notes, request), consentLabel, problem, button);
+    } else {
+      form.append(el("h3", "", t.formTitle), field(t.name, name), field(t.phone, phone),
+                  field(t.request, request), consentLabel, problem, button);
+    }
+    const missingText = booking ? t.bookMissing : t.missing;
+
+    form.addEventListener("submit", async (e) => {
+      e.preventDefault();
+      const phoneOk = /^\+?[0-9][0-9 -]{7,18}$/.test(phone.value.trim());
+      const filled = booking ? (day.value && time.value) : request.value.trim();
+      if (!name.value.trim() || !phoneOk || !filled || !consent.checked) {
+        problem.textContent = missingText; problem.hidden = false; return;
+      }
+      button.disabled = true;
+      try {
+        const res = await fetch("/api/request", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ shop, session_id: sessionId, form_id: ev.form_id, language: lang,
+                                 name: name.value.trim(), phone: phone.value.trim(),
+                                 request: request.value.trim(), consent: consent.checked,
+                                 date: day.value, time: time.value }),
+        });
+        const data = await res.json();
+        if (!res.ok) {
+          throw new Error(data.error === "missing_fields" ? missingText : data.error === "bad_time" ? t.badTime : data.error);
+        }
+        const replyTime = lang === "ar" ? shopInfo.human_reply_time_ar : shopInfo.human_reply_time;
+        const done = booking
+          ? t.bookThanks(name.value.trim(), data.reference, day.value, time.value, replyTime)
+          : t.thanks(name.value.trim(), data.reference, replyTime);
+        form.replaceChildren(el("div", "done", done));
+      } catch (err) {
+        problem.textContent = err.message || t.noServer; problem.hidden = false;
+        button.disabled = false;
+      }
+    });
+    log.appendChild(form);
+    scrollDown();
+  }
+
+  // opts.chosen: the product the customer tapped "Choose" on (the next-step buttons follow the reply).
+  async function sendMessage(text, opts = {}) {
+    text = text.trim();
+    if (!text || busy) return;
+    let failed = false;
+    busy = true;
+    customerHasWritten = true;
+    $("chips").hidden = true;
+    closeChoices();
+    add(text, "customer");
+    input.value = "";
+    autoGrow();
+    const typing = typingDots();
+    log.appendChild(typing);
+    scrollDown();
+
+    let bubble = null;  // the agent message being written right now
+    const turnText = [];  // the agent's text bubbles in this reply (a "retract" removes them)
+    const closeBubble = () => {
+      if (bubble) {
+        bubble.textContent = bubble.textContent.trim();
+        if (!bubble.textContent) bubble.remove();
+      }
+      bubble = null;
+    };
+    const handle = (ev) => {
+      if (ev.type === "text") {
+        if (!bubble) { typing.remove(); bubble = add("", "agent"); turnText.push(bubble); }
+        bubble.textContent += ev.text;
+        scrollDown();
+      } else if (ev.type === "block_end") {
+        closeBubble();
+        log.appendChild(typing);  // more may follow (e.g. after a catalog search)
+        scrollDown();
+      } else if (ev.type === "message") {
+        closeBubble(); typing.remove();
+        add(ev.text, "agent");
+      } else if (ev.type === "products") {
+        closeBubble(); typing.remove();
+        showCards(ev.items);
+      } else if (ev.type === "contact_sales") {
+        closeBubble(); typing.remove();
+        showContactSales(ev);
+      } else if (ev.type === "choices") {
+        closeBubble(); typing.remove();
+        showChoices(ev.options);
+      } else if (ev.type === "form") {
+        closeBubble(); typing.remove();
+        showForm(ev);
+      } else if (ev.type === "retry") {
+        if (bubble) bubble.remove();
+        bubble = null;
+      } else if (ev.type === "retract") {
+        turnText.forEach((b) => b.remove());  // the agent changed course; its earlier words no longer fit
+        turnText.length = 0;
+        bubble = null;
+        log.appendChild(typing);
+      } else if (ev.type === "error") {
+        closeBubble();
+        add(ev.error, "error");
+        failed = true;
+      }
+    };
+
+    try {
+      const res = await fetch("/api/chat", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ shop, session_id: sessionId, message: text, language: lang,
+                               item_id: opts.chosen ? opts.chosen.id : undefined,
+                               shop_label: shopLabel.ar || shopLabel.en ? shopLabel : undefined }),
+      });
+      if (!res.ok) {
+        const data = await res.json();
+        typing.remove();
+        add(data.error || "Error", "error");
+        failed = true;
+      } else {
+        // The answer arrives in pieces: one JSON event per line.
+        const reader = res.body.getReader();
+        const decoder = new TextDecoder();
+        let buffer = "";
+        while (true) {
+          const { value, done } = await reader.read();
+          if (done) break;
+          buffer += decoder.decode(value, { stream: true });
+          const lines = buffer.split("\n");
+          buffer = lines.pop();
+          for (const line of lines) if (line.trim()) handle(JSON.parse(line));
+        }
+        if (buffer.trim()) handle(JSON.parse(buffer));
+        closeBubble();
+      }
+    } catch (e) {
+      closeBubble();
+      typing.remove();
+      add(T[lang].noServer, "error");
+      failed = true;
+    }
+    typing.remove();
+    busy = false;
+    updateSend();
+    if (opts.chosen && !failed) showActions(opts.chosen);
+    input.focus();
+  }
+
+  document.querySelectorAll("#chooser .lang-option").forEach((b) => b.addEventListener("click", () => setLanguage(b.dataset.lang)));
+  $("langToggle").addEventListener("click", () => setLanguage(lang === "ar" ? "en" : "ar"));
+  $("composer").addEventListener("submit", (e) => { e.preventDefault(); sendMessage(input.value); });
+  input.addEventListener("input", autoGrow);
+  input.addEventListener("keydown", (e) => {
+    if (e.key === "Enter" && !e.shiftKey && !e.isComposing) { e.preventDefault(); sendMessage(input.value); }
+  });
+  loadShop();
+</script>
+</body>
+</html>

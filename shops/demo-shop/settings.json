@@ -1,0 +1,51 @@
+{
+  "shop_name_en": "Demo Jewelry",
+  "shop_name_ar": "مجوهرات التجربة",
+  "greeting_ar": "حياك الله، أسعدتنا زيارتك. كيف أقدر أخدمك اليوم؟",
+  "greeting_en": "Welcome! How can I help you today?",
+  "sample_images": true,
+  "occasions": [
+    {"en": "Engagement (shabka)", "ar": "خطوبة (شبكة)"},
+    {"en": "Wedding", "ar": "زواج"},
+    {"en": "New baby", "ar": "مولود جديد"},
+    {"en": "Eid or Ramadan", "ar": "عيد أو رمضان"},
+    {"en": "Graduation", "ar": "تخرج"},
+    {"en": "A gift for someone", "ar": "هدية لشخص عزيز"},
+    {"en": "For myself", "ar": "لنفسي"},
+    {"en": "Just looking", "ar": "أتفرج بس"}
+  ],
+  "city": "Riyadh",
+  "address": "Riyadh. This is a demo shop: for the exact location, offer the contact form.",
+  "phone": "Not shown in this demo: offer the contact form or the Contact sales button.",
+  "opening_hours": "Saturday to Thursday 10:00-13:00 and 16:30-23:00, Friday 16:30-23:00",
+  "visit_slots": ["10:00", "11:00", "12:00", "16:30", "17:30", "18:30", "19:30", "20:30", "21:30"],
+  "visit_slots_friday": ["16:30", "17:30", "18:30", "19:30", "20:30", "21:30"],
+  "currency": "SAR",
+  "vat_rate": 0.15,
+
+  "gold_rate_source": "auto",
+  "gold_markup_percent": 0,
+
+  "gold_rates_sar_per_gram": {
+    "24": 420.0,
+    "22": 385.0,
+    "21": 367.5,
+    "18": 315.0
+  },
+  "gold_rates_updated_at": "SAMPLE RATES - used only when gold_rate_source is manual or the live price is not set up",
+
+  "payment_options": ["Cash", "Mada", "Visa / Mastercard", "Apple Pay", "Tabby (4 payments)"],
+  "max_labor_discount_percent": 15,
+  "free_extras": ["Gift box", "Name engraving (up to 10 letters)", "Free cleaning for 1 year", "Free resizing once"],
+  "high_value_threshold_sar": 25000,
+  "staff_pin": "734578",
+  "human_reply_time": "soon",
+  "human_reply_time_ar": "قريبًا",
+
+  "policies": {
+    "exchange": "Exchange within 7 days with invoice, if the piece is unworn and undamaged. Gold rate of the exchange day applies.",
+    "old_gold": "We buy or exchange old gold by weight and karat at the day's buying rate. Labor fees of old pieces are not paid back.",
+    "returns": "Returns are handled by our sales team. Hand these chats to a human.",
+    "custom_orders": "Custom designs are possible. Hand these chats to a human."
+  }
+}

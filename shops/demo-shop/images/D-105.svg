@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 400"><defs>
+<radialGradient id="bg" cx="50%" cy="38%" r="75%"><stop offset="0" stop-color="#fffaf1"/><stop offset="1" stop-color="#efe5d4"/></radialGradient>
+<linearGradient id="m" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#fbecc0"/><stop offset=".45" stop-color="#d4a64a"/><stop offset=".7" stop-color="#fbecc0"/><stop offset="1" stop-color="#8a6420"/></linearGradient>
+<linearGradient id="md" x1="0" y1="1" x2="1" y2="0"><stop offset="0" stop-color="#8a6420"/><stop offset=".5" stop-color="#d4a64a"/><stop offset="1" stop-color="#fbecc0"/></linearGradient>
+<linearGradient id="dia" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#ffffff"/><stop offset=".55" stop-color="#e4eef8"/><stop offset="1" stop-color="#a8bccf"/></linearGradient>
+<radialGradient id="sh" cx="50%" cy="50%" r="50%"><stop offset="0" stop-color="#5b4a32" stop-opacity=".22"/><stop offset="1" stop-color="#5b4a32" stop-opacity="0"/></radialGradient>
+</defs><rect width="400" height="400" fill="url(#bg)"/><ellipse cx="200" cy="320" rx="135" ry="16" fill="url(#sh)"/><ellipse cx="200" cy="210" rx="125" ry="80" fill="none" stroke="url(#md)" stroke-width="30"/><ellipse cx="200" cy="210" rx="125" ry="80" fill="none" stroke="url(#m)" stroke-width="22"/><ellipse cx="200" cy="203" rx="125" ry="78" fill="none" stroke="#fff" stroke-opacity=".4" stroke-width="3"/></svg>

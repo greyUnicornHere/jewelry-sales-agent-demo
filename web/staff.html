@@ -1,0 +1,540 @@
+<!doctype html>
+<html lang="en" dir="ltr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#f7f4ee" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#151311" media="(prefers-color-scheme: dark)">
+<title>Sales Team Chats</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600&family=IBM+Plex+Sans+Arabic:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #f7f4ee; --surface: #ffffff; --surface-2: #f1ece3;
+    --ink: #1d1a17; --ink-2: #5f574e; --ink-3: #9a9086;
+    --line: rgba(29, 26, 23, 0.09);
+    --gold: #a47a2c; --gold-2: #c9a45c; --gold-soft: rgba(164, 122, 44, 0.10);
+    --primary: #1d1a17; --on-primary: #ffffff;
+    --alert: #b4532a; --alert-soft: rgba(180, 83, 42, 0.10);
+    --ok: #3fa66b; --danger: #a3341f; --danger-soft: rgba(163, 52, 31, 0.08);
+    --header-bg: rgba(247, 244, 238, 0.82);
+    --shadow-sm: 0 1px 2px rgba(29, 26, 23, 0.05), 0 1px 1px rgba(29, 26, 23, 0.03);
+    --shadow-md: 0 8px 28px rgba(29, 26, 23, 0.08), 0 2px 6px rgba(29, 26, 23, 0.04);
+    --radius: 18px;
+    --sans: "IBM Plex Sans Arabic", -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif;
+    --serif: "Cormorant Garamond", Georgia, serif;
+    color-scheme: light;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --bg: #151311; --surface: #1d1a17; --surface-2: #262220;
+      --ink: #f3eee6; --ink-2: #b9afa3; --ink-3: #82786d; --line: rgba(243, 238, 230, 0.09);
+      --gold: #d6b06a; --gold-2: #e6c88b; --gold-soft: rgba(214, 176, 106, 0.12);
+      --primary: #f3eee6; --on-primary: #151311;
+      --alert: #f0a070; --alert-soft: rgba(240, 160, 112, 0.12);
+      --danger: #f0a090; --danger-soft: rgba(240, 160, 144, 0.10);
+      --header-bg: rgba(21, 19, 17, 0.8);
+      --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.3); --shadow-md: 0 8px 28px rgba(0, 0, 0, 0.35);
+      color-scheme: dark;
+    }
+  }
+  :root[data-theme="dark"] {
+    --bg: #151311; --surface: #1d1a17; --surface-2: #262220;
+    --ink: #f3eee6; --ink-2: #b9afa3; --ink-3: #82786d; --line: rgba(243, 238, 230, 0.09);
+    --gold: #d6b06a; --gold-2: #e6c88b; --gold-soft: rgba(214, 176, 106, 0.12);
+    --primary: #f3eee6; --on-primary: #151311;
+    --alert: #f0a070; --alert-soft: rgba(240, 160, 112, 0.12);
+    --danger: #f0a090; --danger-soft: rgba(240, 160, 144, 0.10);
+    --header-bg: rgba(21, 19, 17, 0.8);
+    --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.3); --shadow-md: 0 8px 28px rgba(0, 0, 0, 0.35);
+    color-scheme: dark;
+  }
+
+  * { box-sizing: border-box; }
+  [hidden] { display: none !important; }
+  html, body { height: 100%; }
+  body {
+    margin: 0; background: var(--bg); color: var(--ink); font-family: var(--sans);
+    font-size: 15px; line-height: 1.55; -webkit-font-smoothing: antialiased;
+  }
+  button, input, textarea { font: inherit; color: inherit; }
+  button { cursor: pointer; }
+  :focus-visible { outline: 2px solid var(--gold); outline-offset: 2px; }
+  .logo {
+    flex: 0 0 auto; width: 34px; height: 34px; border-radius: 50%; display: grid; place-items: center;
+    background: linear-gradient(145deg, var(--gold-2), var(--gold));
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.35), var(--shadow-sm);
+  }
+  .logo svg { width: 16px; height: 16px; }
+  .btn {
+    display: inline-flex; align-items: center; justify-content: center; gap: 6px; height: 38px; padding: 0 16px;
+    border-radius: 999px; border: 1px solid var(--line); background: var(--surface); color: var(--ink);
+    font-weight: 500; font-size: 14px; white-space: nowrap; box-shadow: var(--shadow-sm);
+    transition: border-color .2s, opacity .2s, transform .15s;
+  }
+  .btn:hover:not(:disabled) { border-color: var(--gold); }
+  .btn:active:not(:disabled) { transform: scale(0.97); }
+  .btn:disabled { opacity: .4; cursor: default; }
+  .btn.primary { background: var(--primary); color: var(--on-primary); border-color: var(--primary); }
+  .btn.quiet { box-shadow: none; background: transparent; }
+
+  /* ---------- Sign in ---------- */
+  .login { min-height: 100%; display: grid; place-items: center; padding: 32px 16px; }
+  .login form {
+    width: 100%; max-width: 380px; display: flex; flex-direction: column; gap: 14px; padding: 28px;
+    background: var(--surface); border: 1px solid var(--line); border-radius: 24px; box-shadow: var(--shadow-md);
+  }
+  .login .logo { width: 52px; height: 52px; margin: 0 auto 4px; }
+  .login .logo svg { width: 24px; height: 24px; }
+  .login h1 { margin: 0; text-align: center; font-family: var(--serif); font-weight: 600; font-size: 30px; line-height: 1.15; }
+  .login p { margin: 0 0 6px; text-align: center; color: var(--ink-2); font-size: 14px; }
+  .login label { display: flex; flex-direction: column; gap: 6px; font-size: 13px; font-weight: 500; color: var(--ink-2); }
+  .login input {
+    padding: 12px 14px; font-size: 16px; background: var(--surface-2); border: 1px solid transparent; border-radius: 12px;
+  }
+  .login input:focus { outline: none; background: var(--surface); border-color: var(--gold); box-shadow: 0 0 0 4px var(--gold-soft); }
+  .login .btn { height: 46px; font-size: 15px; font-weight: 600; margin-top: 4px; }
+  .problem { color: var(--danger); font-size: 13.5px; text-align: center; }
+
+  /* ---------- App ---------- */
+  .app { height: 100dvh; display: flex; flex-direction: column; }
+  header {
+    flex: 0 0 auto; display: flex; align-items: center; gap: 12px; height: 60px; padding: 0 16px;
+    background: var(--header-bg); border-bottom: 1px solid var(--line);
+    -webkit-backdrop-filter: saturate(180%) blur(20px); backdrop-filter: saturate(180%) blur(20px);
+  }
+  header .title { flex: 1; min-width: 0; }
+  header h1 { margin: 0; font-family: var(--serif); font-weight: 600; font-size: 19px; line-height: 1.2;
+              white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  header .me { display: flex; align-items: center; gap: 6px; font-size: 12.5px; color: var(--ink-2); }
+  header .me::before { content: ""; width: 7px; height: 7px; border-radius: 50%; background: var(--ok);
+                       box-shadow: 0 0 0 3px rgba(63, 166, 107, 0.15); }
+  .main { flex: 1; min-height: 0; display: grid; grid-template-columns: 340px 1fr; }
+
+  /* chat list */
+  .list { min-height: 0; overflow-y: auto; border-inline-end: 1px solid var(--line); padding: 10px; }
+  .list .empty { padding: 28px 14px; color: var(--ink-3); font-size: 14px; text-align: center; }
+  .item {
+    width: 100%; display: flex; gap: 12px; align-items: flex-start; padding: 12px; margin-bottom: 4px;
+    text-align: start; border: 1px solid transparent; border-radius: 14px; background: transparent;
+    transition: background .15s, border-color .15s;
+  }
+  .item:hover { background: var(--surface); }
+  .item.open { background: var(--surface); border-color: var(--line); box-shadow: var(--shadow-sm); }
+  .item.waiting { background: var(--alert-soft); border-color: color-mix(in srgb, var(--alert) 35%, transparent); }
+  .avatar {
+    flex: 0 0 auto; width: 36px; height: 36px; border-radius: 50%; display: grid; place-items: center;
+    background: var(--surface-2); color: var(--ink-2); font-size: 12px; font-weight: 600; position: relative;
+  }
+  .avatar.active::after {  /* the customer's page is open right now */
+    content: ""; position: absolute; right: 0; bottom: 0; width: 9px; height: 9px; border-radius: 50%;
+    background: var(--ok); border: 2px solid var(--bg);
+  }
+  .item .text { flex: 1; min-width: 0; }
+  .item .row { display: flex; align-items: baseline; gap: 8px; }
+  .item .name { flex: 1; font-weight: 600; font-size: 14.5px; }
+  .item .ago { font-size: 12px; color: var(--ink-3); }
+  .item .last { font-size: 13.5px; color: var(--ink-2); display: -webkit-box; -webkit-line-clamp: 2;
+                -webkit-box-orient: vertical; overflow: hidden; unicode-bidi: plaintext; }
+  .pill { display: inline-flex; align-items: center; gap: 5px; margin-top: 6px; padding: 2px 9px; border-radius: 999px;
+          font-size: 11.5px; font-weight: 600; background: var(--surface-2); color: var(--ink-2); }
+  .pill.waiting { background: var(--alert); color: #fff; animation: glow 1.4s ease-in-out infinite; }
+  .pill.staff { background: var(--gold-soft); color: var(--gold); }
+
+  /* conversation */
+  .pane { min-height: 0; display: flex; flex-direction: column; }
+  .placeholder { flex: 1; display: grid; place-items: center; padding: 24px; text-align: center; color: var(--ink-3); }
+  .placeholder h2 { margin: 0 0 6px; font-family: var(--serif); font-weight: 600; font-size: 24px; color: var(--ink-2); }
+  .placeholder p { margin: 0 auto; max-width: 340px; font-size: 14px; }
+  .bar { flex: 0 0 auto; display: flex; align-items: center; gap: 10px; padding: 10px 16px; border-bottom: 1px solid var(--line); }
+  .bar .who { flex: 1; min-width: 0; }
+  .bar .who strong { display: block; font-size: 15px; }
+  .bar .who span { display: block; font-size: 12.5px; color: var(--ink-3); }
+  #back { display: none; }
+  .transcript { flex: 1; min-height: 0; overflow-y: auto; padding: 20px 16px; display: flex; flex-direction: column; gap: 10px; }
+  .line { max-width: 78%; padding: 9px 14px; border-radius: 18px; white-space: pre-wrap; overflow-wrap: anywhere;
+          unicode-bidi: plaintext; font-size: 14.5px; }
+  .line .tag { display: block; font-size: 11.5px; font-weight: 600; color: var(--ink-3); margin-bottom: 1px; }
+  .line.customer { align-self: flex-start; background: var(--surface-2); border-start-start-radius: 6px; }
+  .line.agent { align-self: flex-end; background: var(--surface); border: 1px solid var(--line); border-start-end-radius: 6px; }
+  .line.staff { align-self: flex-end; background: var(--primary); color: var(--on-primary); border-start-end-radius: 6px; }
+  .line.staff .tag { color: var(--gold-2); }
+  .line.note { align-self: center; max-width: 90%; padding: 4px 12px; border-radius: 999px; font-size: 12.5px;
+               color: var(--ink-2); background: var(--gold-soft); text-align: center; }
+  .composer { flex: 0 0 auto; display: flex; gap: 8px; align-items: flex-end; padding: 12px 16px max(12px, env(safe-area-inset-bottom));
+              border-top: 1px solid var(--line); }
+  .composer textarea {
+    flex: 1; resize: none; height: 44px; max-height: 140px; padding: 10px 14px; font-size: 15px; line-height: 1.5; overflow-y: hidden;
+    background: var(--surface); border: 1px solid var(--line); border-radius: 16px; unicode-bidi: plaintext;
+  }
+  .composer textarea:focus { outline: none; border-color: var(--gold); box-shadow: 0 0 0 4px var(--gold-soft); }
+  .composer textarea:disabled { background: var(--surface-2); }
+  .composer .btn { height: 44px; }
+  .toast { position: fixed; left: 50%; bottom: 24px; transform: translateX(-50%); padding: 10px 16px; border-radius: 12px;
+           background: var(--primary); color: var(--on-primary); font-size: 14px; box-shadow: var(--shadow-md); z-index: 20; }
+
+  @keyframes glow { 50% { box-shadow: 0 0 0 5px var(--alert-soft); } }
+  @media (prefers-reduced-motion: reduce) { * { animation: none !important; transition: none !important; } }
+  @media (max-width: 760px) {
+    .main { grid-template-columns: 1fr; }
+    .main.chat-open .list { display: none; }
+    .main:not(.chat-open) .pane { display: none; }
+    .list { border: 0; }
+    #back { display: inline-flex; }
+    .line { max-width: 88%; }
+    header .hide-sm { display: none; }
+  }
+</style>
+</head>
+<body>
+<div class="login" id="login">
+  <form id="loginForm" novalidate>
+    <div class="logo" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none"><path d="M6 4h12l4 5-10 11L2 9l4-5Z" fill="#fff"/></svg></div>
+    <h1>Sales team</h1>
+    <p id="loginShop">Live chats with your customers</p>
+    <label>Your name (customers see it)<input id="myName" type="text" maxlength="40" autocomplete="name"></label>
+    <label>Staff PIN<input id="pin" type="password" inputmode="numeric" autocomplete="current-password"></label>
+    <div class="problem" id="loginProblem" hidden></div>
+    <button class="btn primary" type="submit">Open chats</button>
+  </form>
+</div>
+
+<div class="app" id="app" hidden>
+  <header>
+    <div class="logo" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none"><path d="M6 4h12l4 5-10 11L2 9l4-5Z" fill="#fff"/></svg></div>
+    <div class="title">
+      <h1 id="shopName">Sales team</h1>
+      <div class="me" id="meLine"></div>
+    </div>
+    <button class="btn quiet" id="soundBtn" type="button" title="Sound alerts when a customer asks for a person"></button>
+    <button class="btn quiet hide-sm" id="signOut" type="button">Sign out</button>
+  </header>
+  <div class="main" id="main">
+    <aside class="list" id="list" aria-label="Chats"></aside>
+    <section class="pane" id="pane">
+      <div class="placeholder" id="placeholder">
+        <div>
+          <h2>Choose a chat</h2>
+          <p>Customers who ask for a person appear at the top, with a sound alert. You can also join any chat.</p>
+        </div>
+      </div>
+      <div class="bar" id="bar" hidden>
+        <button class="btn quiet" id="back" type="button" aria-label="Back to the list">‹ Chats</button>
+        <div class="who"><strong id="chatTitle"></strong><span id="chatState"></span></div>
+        <button class="btn primary" id="joinBtn" type="button">Join chat</button>
+        <button class="btn" id="leaveBtn" type="button" hidden>Hand back to AI</button>
+      </div>
+      <div class="transcript" id="transcript" hidden aria-live="polite"></div>
+      <form class="composer" id="composer" hidden>
+        <textarea id="reply" rows="1" disabled></textarea>
+        <button class="btn primary" id="sendBtn" type="submit" disabled>Send</button>
+      </form>
+    </section>
+  </div>
+</div>
+<div class="toast" id="toast" hidden></div>
+
+<script>
+  const shop = new URLSearchParams(location.search).get("shop") || "demo-shop";
+  const $ = (id) => document.getElementById(id);
+  const store = {  // per-device conveniences; the page works without them
+    get(area, k) { try { return window[area].getItem(k) || ""; } catch (e) { return ""; } },
+    set(area, k, v) { try { window[area].setItem(k, v); } catch (e) {} },
+    del(area, k) { try { window[area].removeItem(k); } catch (e) {} },
+  };
+  let pin = store.get("sessionStorage", "staffPin:" + shop);
+  let me = store.get("localStorage", "staffName");
+  let soundOn = store.get("localStorage", "staffSound") !== "off";
+  let chats = [], openId = null, openSeq = 0, openMode = "ai", openStaff = "", openLang = "en";
+  let serverNow = 0, seenWaiting = new Set(), audio = null, listTimer = null, chatTimer = null, titleTimer = null;
+
+  function el(tag, cls, text) {
+    const n = document.createElement(tag);
+    if (cls) n.className = cls;
+    if (text !== undefined) n.textContent = text;
+    return n;
+  }
+  const label = (id) => "Customer " + id.replace(/[^a-z0-9]/gi, "").slice(0, 4).toUpperCase();
+  const langName = (l) => (l === "en" ? "English" : "Arabic");
+  function ago(t) {
+    const s = Math.max(0, Math.round(serverNow - t));
+    return s < 60 ? "now" : s < 3600 ? Math.floor(s / 60) + " min" : Math.floor(s / 3600) + " h";
+  }
+  function toast(text) {
+    const t = $("toast");
+    t.textContent = text; t.hidden = false;
+    clearTimeout(toast.timer);
+    toast.timer = setTimeout(() => { t.hidden = true; }, 3500);
+  }
+
+  async function api(path, body) {
+    const opts = { headers: { "X-Staff-Pin": pin } };
+    if (body) {
+      opts.method = "POST";
+      opts.headers["Content-Type"] = "application/json";
+      opts.body = JSON.stringify({ shop, ...body });
+    }
+    const res = await fetch(path, opts);
+    const data = await res.json().catch(() => ({}));
+    if (res.status === 403) { signOut(data.error || "Wrong PIN."); throw new Error("signed out"); }
+    if (!res.ok) throw new Error(data.error || "Something went wrong.");
+    return data;
+  }
+
+  // ---------- sign in ----------
+  function signOut(problem) {
+    clearTimeout(listTimer); clearTimeout(chatTimer);
+    pin = ""; store.del("sessionStorage", "staffPin:" + shop);
+    $("app").hidden = true; $("login").hidden = false;
+    $("myName").value = me;
+    $("loginProblem").textContent = problem || ""; $("loginProblem").hidden = !problem;
+  }
+
+  $("loginForm").addEventListener("submit", async (e) => {
+    e.preventDefault();
+    const name = $("myName").value.trim().replace(/\s+/g, " ");
+    if (!name || !$("pin").value) {
+      $("loginProblem").textContent = "Please write your name and the PIN."; $("loginProblem").hidden = false; return;
+    }
+    me = name; pin = $("pin").value.trim();
+    unlockSound();  // browsers allow sound only after a tap
+    if ("Notification" in window && Notification.permission === "default") Notification.requestPermission().catch(() => {});
+    start();
+  });
+
+  async function start() {
+    try {
+      await loadList();
+    } catch (e) {
+      if (e.message !== "signed out") signOut(e.message);
+      return;
+    }
+    store.set("sessionStorage", "staffPin:" + shop, pin);
+    store.set("localStorage", "staffName", me);
+    $("login").hidden = true; $("app").hidden = false;
+    $("meLine").textContent = me + " · online";
+    $("pin").value = "";
+    showSound();
+  }
+
+  // ---------- alerts ----------
+  function unlockSound() {
+    try { audio = audio || new (window.AudioContext || window.webkitAudioContext)(); audio.resume(); } catch (e) {}
+  }
+  function chime() {
+    if (!soundOn || !audio) return;
+    const t0 = audio.currentTime;
+    for (const [freq, at] of [[880, 0], [1320, 0.16], [880, 0.5], [1320, 0.66]]) {
+      const o = audio.createOscillator(), g = audio.createGain();
+      o.type = "sine"; o.frequency.value = freq;
+      g.gain.setValueAtTime(0.0001, t0 + at);
+      g.gain.exponentialRampToValueAtTime(0.25, t0 + at + 0.02);
+      g.gain.exponentialRampToValueAtTime(0.0001, t0 + at + 0.3);
+      o.connect(g).connect(audio.destination);
+      o.start(t0 + at); o.stop(t0 + at + 0.32);
+    }
+  }
+  function showSound() { $("soundBtn").textContent = soundOn ? "🔔 Alerts on" : "🔕 Alerts off"; }
+  $("soundBtn").addEventListener("click", () => {
+    soundOn = !soundOn; unlockSound();
+    store.set("localStorage", "staffSound", soundOn ? "on" : "off");
+    showSound(); if (soundOn) chime();
+  });
+  function alertWaiting(chat) {
+    chime();
+    toast(`${label(chat.session_id)} wants to talk to a person`);
+    if ("Notification" in window && Notification.permission === "granted" && document.hidden) {
+      try { new Notification("Customer waiting", { body: chat.request || "A customer wants to talk to a person." }); } catch (e) {}
+    }
+  }
+  function flashTitle(waiting) {
+    clearInterval(titleTimer);
+    document.title = "Sales Team Chats";
+    if (!waiting) return;
+    let on = false;
+    titleTimer = setInterval(() => { on = !on; document.title = on ? `● ${waiting} waiting` : "Sales Team Chats"; }, 1000);
+  }
+
+  // ---------- chat list ----------
+  async function loadList() {
+    clearTimeout(listTimer);
+    const data = await api(`/api/staff/chats?shop=${encodeURIComponent(shop)}`);
+    serverNow = data.now;
+    $("shopName").textContent = (data.shop_name_en || "Shop") + " · Sales team";
+    chats = data.chats;
+    const waiting = chats.filter((c) => c.mode === "waiting");
+    for (const c of waiting) if (!seenWaiting.has(c.session_id)) alertWaiting(c);
+    seenWaiting = new Set(waiting.map((c) => c.session_id));
+    flashTitle(waiting.length);
+    drawList();
+    listTimer = setTimeout(keepListing, 2000);
+  }
+
+  function keepListing() {
+    loadList().catch((e) => {  // the app may be restarting: try again, unless the PIN stopped working
+      if (e.message !== "signed out" && pin) listTimer = setTimeout(keepListing, 4000);
+    });
+  }
+
+  function drawList() {
+    const list = $("list");
+    if (!chats.length) {
+      list.replaceChildren(el("div", "empty", "No chats yet. When a customer writes, the chat appears here."));
+      return;
+    }
+    list.replaceChildren(...chats.map((c) => {
+      const b = el("button", "item" + (c.mode === "waiting" ? " waiting" : "") + (c.session_id === openId ? " open" : ""));
+      b.type = "button";
+      const av = el("div", "avatar" + (c.customer_active ? " active" : ""), c.language === "en" ? "EN" : "ع");
+      const text = el("div", "text");
+      const row = el("div", "row");
+      row.append(el("span", "name", label(c.session_id)), el("span", "ago", ago(c.updated)));
+      text.append(row, el("div", "last", (c.last_who === "customer" ? "" : c.last_who === "staff" ? "You: " : "AI: ") + (c.last || "…")));
+      if (c.mode === "waiting") text.append(el("span", "pill waiting", `Wants a person · ${c.wait_left} s`));
+      else if (c.mode === "staff") text.append(el("span", "pill staff", `${c.staff_name} is answering`));
+      else text.append(el("span", "pill", `AI · ${c.messages} message${c.messages === 1 ? "" : "s"}`));
+      b.append(av, text);
+      b.addEventListener("click", () => openChat(c.session_id));
+      return b;
+    }));
+  }
+
+  // ---------- one conversation ----------
+  function openChat(id) {
+    openId = id; openSeq = 0;
+    $("transcript").replaceChildren();
+    $("placeholder").hidden = true;
+    $("bar").hidden = $("transcript").hidden = $("composer").hidden = false;
+    $("main").classList.add("chat-open");
+    $("chatTitle").textContent = label(id);
+    drawList();
+    loadChat();
+  }
+
+  $("back").addEventListener("click", () => {
+    openId = null; clearTimeout(chatTimer);
+    $("main").classList.remove("chat-open");
+    $("placeholder").hidden = false;
+    $("bar").hidden = $("transcript").hidden = $("composer").hidden = true;
+    drawList();
+  });
+
+  async function loadChat() {
+    clearTimeout(chatTimer);
+    const id = openId;
+    if (!id) return;
+    try {
+      const data = await api(`/api/staff/chat?shop=${encodeURIComponent(shop)}&session_id=${encodeURIComponent(id)}&after=${openSeq}`);
+      if (id !== openId) return;
+      for (const e of data.entries) if (e.seq > openSeq) { drawEntry(e); openSeq = e.seq; }
+      openMode = data.mode; openStaff = data.staff_name; openLang = data.language;
+      drawControls();
+    } catch (e) {
+      if (e.message === "signed out") return;
+      if (id === openId) $("chatState").textContent = e.message;
+    }
+    chatTimer = setTimeout(loadChat, 1500);
+  }
+
+  function drawEntry(e) {
+    const box = $("transcript");
+    const near = box.scrollHeight - box.scrollTop - box.clientHeight < 80;
+    let node;
+    if (e.who === "customer") {
+      node = el("div", "line customer");
+      node.append(el("span", "tag", "Customer"), document.createTextNode(e.text));
+    } else if (e.who === "agent") {
+      if (!e.text) return;
+      node = el("div", "line agent");
+      node.append(el("span", "tag", "AI assistant"), document.createTextNode(e.text));
+    } else if (e.who === "staff") {
+      node = el("div", "line staff");
+      node.append(el("span", "tag", e.name), document.createTextNode(e.text));
+    } else {
+      const words = {
+        waiting: "Customer asked to talk to a person" + (e.text ? `: ${e.text}` : ""),
+        joined: `${e.name} joined. The AI is paused.`,
+        left: `${e.name || "Staff"} left. The AI answers again.` + (e.text && e.text.includes("closed") ? " (staff page closed)" : ""),
+        timeout: "Nobody joined in time. The customer was offered WhatsApp / the contact form.",
+      };
+      node = el("div", "line note", words[e.event] || e.text);
+    }
+    node.dir = "auto";
+    box.appendChild(node);
+    if (near || e.who === "staff") box.scrollTop = box.scrollHeight;
+  }
+
+  function drawControls() {
+    const mine = openMode === "staff" && openStaff === me;
+    const states = {
+      ai: `${langName(openLang)} · the AI is answering`,
+      waiting: `${langName(openLang)} · wants to talk to a person`,
+      staff: mine ? `${langName(openLang)} · you are answering (AI paused)` : `${langName(openLang)} · ${openStaff} is answering`,
+    };
+    $("chatState").textContent = states[openMode] || "";
+    $("joinBtn").hidden = mine;
+    $("joinBtn").textContent = openMode === "staff" ? "Take over" : "Join chat";
+    $("leaveBtn").hidden = !mine;
+    const reply = $("reply");
+    const wasDisabled = reply.disabled;
+    reply.disabled = !mine;
+    reply.placeholder = mine ? "Write to the customer…" : "Join the chat to write to the customer";
+    $("sendBtn").disabled = !mine || !reply.value.trim();
+    if (mine && wasDisabled) {  // just joined: a friendly first line, ready to send or change
+      if (!reply.value) {
+        reply.value = openLang === "en"
+          ? `Hello, this is ${me} from the sales team. How can I help you?`
+          : `حياك الله، معك ${me} من فريق المبيعات. كيف أقدر أخدمك؟`;
+        reply.dir = openLang === "en" ? "ltr" : "rtl";
+      }
+      reply.focus();
+      $("sendBtn").disabled = !reply.value.trim();
+    }
+  }
+
+  $("joinBtn").addEventListener("click", async () => {
+    $("joinBtn").disabled = true;
+    try { await api("/api/staff/join", { session_id: openId, name: me }); await loadChat(); keepListing(); }
+    catch (e) { if (e.message !== "signed out") toast(e.message); }
+    $("joinBtn").disabled = false;
+  });
+  $("leaveBtn").addEventListener("click", async () => {
+    $("leaveBtn").disabled = true;
+    try { await api("/api/staff/leave", { session_id: openId, name: me }); $("reply").value = ""; grow(); await loadChat(); keepListing(); }
+    catch (e) { if (e.message !== "signed out") toast(e.message); }
+    $("leaveBtn").disabled = false;
+  });
+
+  const reply = $("reply");
+  function grow() {
+    reply.style.height = "auto";
+    reply.style.height = Math.min(reply.scrollHeight + 2, 140) + "px";
+    reply.style.overflowY = reply.scrollHeight > 140 ? "auto" : "hidden";
+    $("sendBtn").disabled = reply.disabled || !reply.value.trim();
+  }
+  reply.addEventListener("input", grow);
+  reply.addEventListener("keydown", (e) => {
+    if (e.key === "Enter" && !e.shiftKey && !e.isComposing) { e.preventDefault(); $("composer").requestSubmit(); }
+  });
+  $("composer").addEventListener("submit", async (e) => {
+    e.preventDefault();
+    const text = reply.value.trim();
+    if (!text || reply.disabled) return;
+    $("sendBtn").disabled = true;
+    try {
+      await api("/api/staff/send", { session_id: openId, name: me, text });
+      reply.value = ""; grow();
+      await loadChat();
+    } catch (err) {
+      if (err.message !== "signed out") toast(err.message);
+      $("sendBtn").disabled = false;
+    }
+  });
+  $("signOut").addEventListener("click", () => signOut(""));
+
+  $("myName").value = me;
+  if (pin && me) start(); else signOut("");
+</script>
+</body>
+</html>
